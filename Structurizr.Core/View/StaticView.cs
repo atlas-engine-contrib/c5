@@ -64,11 +64,30 @@ namespace Structurizr
         }
 
         /// <summary>
+        /// Adds all people in the model to this view.
+        /// </summary>
+        public void AddAllProcesses()
+        {
+            foreach (var item in this.Model.Processes)
+            {
+                Add(item);
+            }
+        }
+
+        /// <summary>
         /// Adds the given Person to this view.
         /// </summary>
         public void Add(Person person)
         {
             AddElement(person, true);
+        }
+
+        /// <summary>
+        /// Adds the given Person to this view.
+        /// </summary>
+        public void Add(Process item)
+        {
+            AddElement(item, true);
         }
 
         /// <summary>
@@ -105,7 +124,7 @@ namespace Structurizr
                 }
             }
         }
-        
+
         public void AddAnimation(params Element[] elements)
         {
             if (elements == null || elements.Length == 0)

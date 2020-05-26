@@ -1,0 +1,1997 @@
+From 0533b7cf4061c0433128af968d76947abd33aabb Mon Sep 17 00:00:00 2001
+From: amn-zimmermann <amn.zimmermann@outlook.de>
+Date: Tue, 26 May 2020 10:31:55 +0200
+Subject: [PATCH] Inital Fork Commit 5Minds
+
+---
+ Structurizr.Core/Model/Model.cs               | 109 +++++--
+ Structurizr.Core/Model/Process.cs             |  85 ++++++
+ Structurizr.Core/Model/Tags.cs                |   3 +-
+ Structurizr.Core/View/ProcessView.cs          |  38 +++
+ Structurizr.Core/View/Shape.cs                |   1 +
+ Structurizr.Core/View/StaticView.cs           |  21 +-
+ Structurizr.Core/View/ViewSet.cs              |  42 ++-
+ .../Arc42DocumentationExample.cs              |  75 -----
+ Structurizr.Examples/BigBankPlc.cs            | 266 ------------------
+ Structurizr.Examples/ClientSideEncryption.cs  |  44 ---
+ Structurizr.Examples/CorporateBranding.cs     |  51 ----
+ Structurizr.Examples/FilteredViews.cs         |  53 ----
+ Structurizr.Examples/FinancialRiskSystem.cs   |  88 ------
+ Structurizr.Examples/GettingStarted.cs        |  42 ---
+ Structurizr.Examples/HttpHealthChecks.cs      |  59 ----
+ Structurizr.Examples/MicroservicesExample.cs  | 104 -------
+ Structurizr.Examples/ProcessView.cs           |  41 +++
+ .../Structurizr.Examples.csproj               |   1 -
+ .../StructurizrDocumentationExample.cs        |  77 -----
+ Structurizr.Examples/StylingElements.cs       |  56 ----
+ Structurizr.Examples/StylingRelationships.cs  |  51 ----
+ Structurizr.Examples/Theme.cs                 |  40 ---
+ ...intsAndPerspectivesDocumentationExample.cs |  65 -----
+ Structurizr.Examples/WidgetsLimited.cs        |  88 ------
+ test.json                                     |   0
+ 25 files changed, 304 insertions(+), 1196 deletions(-)
+ create mode 100644 Structurizr.Core/Model/Process.cs
+ create mode 100644 Structurizr.Core/View/ProcessView.cs
+ delete mode 100644 Structurizr.Examples/Arc42DocumentationExample.cs
+ delete mode 100644 Structurizr.Examples/BigBankPlc.cs
+ delete mode 100644 Structurizr.Examples/ClientSideEncryption.cs
+ delete mode 100644 Structurizr.Examples/CorporateBranding.cs
+ delete mode 100644 Structurizr.Examples/FilteredViews.cs
+ delete mode 100644 Structurizr.Examples/FinancialRiskSystem.cs
+ delete mode 100644 Structurizr.Examples/GettingStarted.cs
+ delete mode 100644 Structurizr.Examples/HttpHealthChecks.cs
+ delete mode 100644 Structurizr.Examples/MicroservicesExample.cs
+ create mode 100644 Structurizr.Examples/ProcessView.cs
+ delete mode 100644 Structurizr.Examples/StructurizrDocumentationExample.cs
+ delete mode 100644 Structurizr.Examples/StylingElements.cs
+ delete mode 100644 Structurizr.Examples/StylingRelationships.cs
+ delete mode 100644 Structurizr.Examples/Theme.cs
+ delete mode 100644 Structurizr.Examples/ViewpointsAndPerspectivesDocumentationExample.cs
+ delete mode 100644 Structurizr.Examples/WidgetsLimited.cs
+ create mode 100644 test.json
+
+diff --git a/Structurizr.Core/Model/Model.cs b/Structurizr.Core/Model/Model.cs
+index f6abf98..9467645 100644
+--- a/Structurizr.Core/Model/Model.cs
++++ b/Structurizr.Core/Model/Model.cs
+@@ -16,6 +16,22 @@ public sealed class Model
+         [DataMember(Name = "enterprise", EmitDefaultValue = false)]
+         public Enterprise Enterprise { get; set; }
+ 
++        private HashSet<Process> _processes;
++
++        [DataMember(Name = "process", EmitDefaultValue = false)]
++        public ISet<Process> Processes
++        {
++            get
++            {
++                return new HashSet<Process>(_processes);
++            }
++
++            internal set
++            {
++                _processes = new HashSet<Process>(value);
++            }
++        }
++
+         private HashSet<Person> _people;
+ 
+         [DataMember(Name = "people", EmitDefaultValue = false)]
+@@ -79,6 +95,7 @@ public ICollection<Relationship> Relationships
+ 
+         internal Model()
+         {
++            _processes = new HashSet<Process>();
+             _people = new HashSet<Person>();
+             _softwareSystems = new HashSet<SoftwareSystem>();
+             _deploymentNodes = new HashSet<DeploymentNode>();
+@@ -167,6 +184,48 @@ public Person AddPerson(Location location, string name, string description)
+             }
+         }
+ 
++        /// <summary>
++        /// Creates a person (location is unspecified) and adds it to the model
++        /// (unless one exists with the same name already.
++        /// </summary>
++        /// <param name="name">the name of the person (e.g. "Admin User" or "Bob the Business User")</param>
++        /// <param name="description">a short description of the person</param>
++        /// <returns>the Person instance created and added to the model (or null)</returns>
++        public Process AddProcess(string name, string description)
++        {
++            return AddProcess(Location.Unspecified, name, description);
++        }
++
++        /// <summary>
++        /// Creates a person (location is unspecified) and adds it to the model
++        /// (unless one exisrs with the same name already.
++        /// </summary>
++        /// <param name="location">the location of the person (e.g. internal, external, etc)</param>
++        /// <param name="name">the name of the person (e.g. "Admin User" or "Bob the Business User")</param>
++        /// <param name="description">a short description of the person</param>
++        /// <returns>the Person instance created and added to the model (or null)</returns>
++        public Process AddProcess(Location location, string name, string description)
++        {
++            if (GetPersonWithName(name) == null)
++            {
++                var process = new Process();
++                process.Location = location;
++                process.Name = name;
++                process.Description = description;
++
++                _processes.Add(process);
++
++                process.Id = _idGenerator.GenerateId(process);
++                AddElementToInternalStructures(process);
++
++                return process;
++            }
++            else {
++                return null;
++            }
++        }
++
++
+         internal Container AddContainer(SoftwareSystem parent, string name, string description, string technology)
+         {
+             if (parent.GetContainerWithName(name) == null)
+@@ -188,7 +247,7 @@ internal Container AddContainer(SoftwareSystem parent, string name, string descr
+                 return null;
+             }
+         }
+-        
++
+         internal ContainerInstance AddContainerInstance(DeploymentNode deploymentNode, Container container) {
+             if (container == null) {
+                 throw new ArgumentException("A container must be specified.");
+@@ -258,7 +317,7 @@ internal Component AddComponent(Container parent, string name, string type, stri
+ 
+                 return component;
+             }
+-             
++
+             throw new ArgumentException("A container named '" + name + "' already exists for this software system.");
+         }
+ 
+@@ -297,7 +356,7 @@ internal Component AddComponent(Container parent, string name, string type, stri
+                     Instances = instances,
+                     Environment = environment
+                 };
+-                
++
+                 if (properties != null) {
+                     deploymentNode.Properties = properties;
+                 }
+@@ -314,7 +373,7 @@ internal Component AddComponent(Container parent, string name, string type, stri
+                 throw new ArgumentException("A deployment node named '" + name + "' already exists.");
+             }
+         }
+-        
++
+         /// <summary>
+         /// Gets the DeploymentNode with the specified name.
+         /// </summary>
+@@ -349,7 +408,7 @@ public DeploymentNode GetDeploymentNodeWithName(string name, string environment)
+             if (AddRelationship(relationship)) {
+                 return relationship;
+             }
+-            
++
+             return null;
+         }
+ 
+@@ -479,7 +538,7 @@ public bool Contains(Element element)
+ 
+         internal void Hydrate()
+         {
+-            
++
+             // add all of the elements to the model
+             foreach (Person person in _people)
+             {
+@@ -523,7 +582,7 @@ internal void Hydrate()
+                     }
+                 }
+             }
+-            
++
+             _deploymentNodes.ToList().ForEach(HydrateDeploymentNodeRelationships);
+         }
+ 
+@@ -540,7 +599,7 @@ private void HydrateDeploymentNode(DeploymentNode deploymentNode, DeploymentNode
+                 AddElementToInternalStructures(containerInstance);
+             }
+         }
+-        
++
+         private void HydrateDeploymentNodeRelationships(DeploymentNode deploymentNode)
+         {
+             HydrateRelationships(deploymentNode);
+@@ -593,7 +652,7 @@ public Relationship GetRelationship(string id)
+         {
+             return _relationshipsById[id];
+         }
+-        
++
+         /// <summary>
+         /// Propagates all relationships from children to their parents. For example, if you have two components (AAA and BBB)
+         /// in different software systems that have a relationship, calling this method will add the following
+@@ -606,15 +665,15 @@ public ISet<Relationship> AddImplicitRelationships()
+ 
+             string descriptionKey = "D";
+             string technologyKey = "T";
+-            
++
+             // source element -> destination element -> D/T -> possible values
+             Dictionary<Element, Dictionary<Element, Dictionary<string, HashSet<string>>>> candidateRelationships = new Dictionary<Element, Dictionary<Element, Dictionary<string, HashSet<string>>>>();
+-    
++
+             foreach (Relationship relationship in Relationships)
+             {
+                 Element source = relationship.Source;
+                 Element destination = relationship.Destination;
+-    
++
+                 while (source != null)
+                 {
+                     while (destination != null)
+@@ -623,58 +682,58 @@ public ISet<Relationship> AddImplicitRelationships()
+                         {
+                             if (propagatedRelationshipIsAllowed(source, destination))
+                             {
+-    
+-                                if (!candidateRelationships.ContainsKey(source)) 
++
++                                if (!candidateRelationships.ContainsKey(source))
+                                 {
+                                     candidateRelationships.Add(source, new Dictionary<Element, Dictionary<string, HashSet<string>>>());
+                                 }
+-    
++
+                                 if (!candidateRelationships[source].ContainsKey(destination))
+                                 {
+                                     candidateRelationships[source].Add(destination, new Dictionary<string, HashSet<string>>());
+                                     candidateRelationships[source][destination].Add(descriptionKey, new HashSet<string>());
+                                     candidateRelationships[source][destination].Add(technologyKey, new HashSet<string>());
+                                 }
+-    
++
+                                 if (relationship.Description != null)
+                                 {
+                                     candidateRelationships[source][destination][descriptionKey].Add(relationship.Description);
+                                 }
+-    
++
+                                 if (relationship.Technology != null)
+                                 {
+                                     candidateRelationships[source][destination][technologyKey].Add(relationship.Technology);
+                                 }
+                             }
+                         }
+-    
++
+                         destination = destination.Parent;
+                     }
+-    
++
+                     destination = relationship.Destination;
+                     source = source.Parent;
+                 }
+             }
+-    
++
+             foreach (Element source in candidateRelationships.Keys)
+             {
+                 foreach (Element destination in candidateRelationships[source].Keys)
+                 {
+                     ISet<string> possibleDescriptions = candidateRelationships[source][destination][descriptionKey];
+                     ISet<string> possibleTechnologies = candidateRelationships[source][destination][technologyKey];
+-    
++
+                     string description = "";
+                     if (possibleDescriptions.Count == 1)
+                     {
+                         description = possibleDescriptions.First();
+                     }
+-    
++
+                     string technology = "";
+                     if (possibleTechnologies.Count == 1)
+                     {
+                         technology = possibleTechnologies.First();
+                     }
+-    
++
+                     Relationship implicitRelationship = AddRelationship(source, destination, description, technology);
+                     if (implicitRelationship != null)
+                     {
+@@ -682,7 +741,7 @@ public ISet<Relationship> AddImplicitRelationships()
+                     }
+                 }
+             }
+-    
++
+             return implicitRelationships;
+         }
+ 
+@@ -698,4 +757,4 @@ private bool propagatedRelationshipIsAllowed(Element source, Element destination
+ 
+     }
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/Structurizr.Core/Model/Process.cs b/Structurizr.Core/Model/Process.cs
+new file mode 100644
+index 0000000..54b0413
+--- /dev/null
++++ b/Structurizr.Core/Model/Process.cs
+@@ -0,0 +1,85 @@
++namespace Structurizr
++{
++    using System;
++    using System.Collections.Generic;
++    using System.Runtime.Serialization;
++
++    [DataContract]
++    public sealed class Process : StaticStructureElement, IEquatable<Process>
++    {
++        /// <summary>
++        /// The location of this person.
++        /// </summary>
++        [DataMember(Name = "location", EmitDefaultValue = true)]
++        public Location Location { get; set; }
++
++        public override string CanonicalName
++        {
++            get
++            {
++                return CanonicalNameSeparator + FormatForCanonicalName(Name);
++            }
++        }
++
++        public override Element Parent
++        {
++            get
++            {
++                return null;
++            }
++
++            set
++            {
++            }
++        }
++
++        internal Process()
++        {
++        }
++
++        public override List<string> GetRequiredTags()
++        {
++            return new List<string>
++            {
++                Structurizr.Tags.Element,
++                Structurizr.Tags.Process
++            };
++        }
++
++        public new Relationship Delivers(Person destination, string description)
++        {
++            throw new InvalidOperationException();
++        }
++
++        public new Relationship Delivers(Person destination, string description, string technology)
++        {
++            throw new InvalidOperationException();
++        }
++
++        public new Relationship Delivers(Person destination, string description, string technology, InteractionStyle interactionStyle)
++        {
++            throw new InvalidOperationException();
++        }
++
++        public Relationship InteractsWith(Person destination, string description)
++        {
++            return Model.AddRelationship(this, destination, description);
++        }
++
++        public Relationship InteractsWith(Person destination, string description, string technology)
++        {
++            return Model.AddRelationship(this, destination, description, technology);
++        }
++
++        public Relationship InteractsWith(Person destination, string description, string technology, InteractionStyle interactionStyle)
++        {
++            return Model.AddRelationship(this, destination, description, technology, interactionStyle);
++        }
++
++        public bool Equals(Process process)
++        {
++            return this.Equals(process as Element);
++        }
++
++    }
++}
+diff --git a/Structurizr.Core/Model/Tags.cs b/Structurizr.Core/Model/Tags.cs
+index 673a414..511a20a 100644
+--- a/Structurizr.Core/Model/Tags.cs
++++ b/Structurizr.Core/Model/Tags.cs
+@@ -7,6 +7,7 @@ public sealed class Tags
+         public const string Relationship = "Relationship";
+ 
+         public const string Person = "Person";
++        public const string Process = "Process";
+         public const string SoftwareSystem = "Software System";
+         public const string Container = "Container";
+         public const string Component = "Component";
+@@ -16,6 +17,6 @@ public sealed class Tags
+ 
+         public const string DeploymentNode = "Deployment Node";
+         public const string ContainerInstance = "Container Instance";
+-        
++
+     }
+ }
+diff --git a/Structurizr.Core/View/ProcessView.cs b/Structurizr.Core/View/ProcessView.cs
+new file mode 100644
+index 0000000..ce95905
+--- /dev/null
++++ b/Structurizr.Core/View/ProcessView.cs
+@@ -0,0 +1,38 @@
++namespace Structurizr.Core.View
++{
++    public class ProcessView : StaticView
++    {
++        public ProcessView(Model model, string key, string description) : base(null, key, description)
++        {
++            this._processModel = model;
++        }
++
++        private Model _processModel;
++
++        public override Model Model
++        {
++            get => this._processModel;
++            set { }
++        }
++
++        public override string Name => " - Processes";
++
++        public override void AddAllElements()
++        {
++            AddAllSoftwareSystems();
++            AddAllPeople();
++            AddAllProcesses();
++        }
++
++        /// <summary>
++        /// Adds people, software systems and containers that are directly related to the given element.
++        /// </summary>
++        public override void AddNearestNeighbours(Element element)
++        {
++            AddNearestNeighbours(element, typeof(Person));
++            AddNearestNeighbours(element, typeof(SoftwareSystem));
++            AddNearestNeighbours(element, typeof(Container));
++            AddNearestNeighbours(element, typeof(Process));
++        }
++    }
++}
+diff --git a/Structurizr.Core/View/Shape.cs b/Structurizr.Core/View/Shape.cs
+index 1d25a37..25e8a43 100644
+--- a/Structurizr.Core/View/Shape.cs
++++ b/Structurizr.Core/View/Shape.cs
+@@ -11,6 +11,7 @@ public enum Shape
+         Cylinder,
+         Pipe,
+         Person,
++        Process,
+         Robot,
+         Folder,
+         WebBrowser,
+diff --git a/Structurizr.Core/View/StaticView.cs b/Structurizr.Core/View/StaticView.cs
+index 8384250..443a280 100644
+--- a/Structurizr.Core/View/StaticView.cs
++++ b/Structurizr.Core/View/StaticView.cs
+@@ -63,6 +63,17 @@ public void AddAllPeople()
+             }
+         }
+ 
++        /// <summary>
++        /// Adds all people in the model to this view.
++        /// </summary>
++        public void AddAllProcesses()
++        {
++            foreach (var item in this.Model.Processes)
++            {
++                Add(item);
++            }
++        }
++
+         /// <summary>
+         /// Adds the given Person to this view.
+         /// </summary>
+@@ -71,6 +82,14 @@ public void Add(Person person)
+             AddElement(person, true);
+         }
+ 
++        /// <summary>
++        /// Adds the given Person to this view.
++        /// </summary>
++        public void Add(Process item)
++        {
++            AddElement(item, true);
++        }
++
+         /// <summary>
+         /// Removes the given Person from this view.
+         /// </summary>
+@@ -105,7 +124,7 @@ protected void AddNearestNeighbours(Element element, Type typeOfElement)
+                 }
+             }
+         }
+-        
++
+         public void AddAnimation(params Element[] elements)
+         {
+             if (elements == null || elements.Length == 0)
+diff --git a/Structurizr.Core/View/ViewSet.cs b/Structurizr.Core/View/ViewSet.cs
+index 179f712..010ea20 100644
+--- a/Structurizr.Core/View/ViewSet.cs
++++ b/Structurizr.Core/View/ViewSet.cs
+@@ -5,6 +5,7 @@
+ 
+ namespace Structurizr
+ {
++    using Structurizr.Core.View;
+ 
+     /// <summary>
+     /// The set of views onto a software architecture model.
+@@ -68,6 +69,18 @@ internal set
+             }
+         }
+ 
++        private HashSet<ProcessView> _processViews;
++        /// <summary>
++        /// The set of system context views.
++        /// </summary>
++        [DataMember(Name = "processViews", EmitDefaultValue = false)]
++        public ISet<ProcessView> ProcessViews
++        {
++            get => new HashSet<ProcessView>(_processViews);
++
++            internal set => _processViews = new HashSet<ProcessView>(value);
++        }
++
+         private HashSet<ContainerView> _containerViews;
+ 
+         /// <summary>
+@@ -171,6 +184,7 @@ internal set
+ 
+         internal ViewSet()
+         {
++            _processViews = new HashSet<ProcessView>();
+             _systemLandscapeViews = new HashSet<SystemLandscapeView>();
+             _systemContextViews = new HashSet<SystemContextView>();
+             _containerViews = new HashSet<ContainerView>();
+@@ -187,6 +201,16 @@ internal ViewSet(Model model) : this()
+             Model = model;
+         }
+ 
++        public ProcessView CreateProcessView(string key, string description)
++        {
++            AssertThatTheViewKeyIsUnique(key);
++
++            var view = new ProcessView(Model, key, description);
++            _processViews.Add(view);
++            return view;
++        }
++
++
+         public SystemLandscapeView CreateSystemLandscapeView(string key, string description)
+         {
+             AssertThatTheViewKeyIsUnique(key);
+@@ -254,7 +278,7 @@ public DynamicView CreateDynamicView(Container container, string key, string des
+             _dynamicViews.Add(view);
+             return view;
+         }
+-        
++
+         /// <summary>
+         /// Creates a deployment view.
+         /// </summary>
+@@ -285,7 +309,7 @@ public DynamicView CreateDynamicView(Container container, string key, string des
+ 
+ 
+         /// <summary>
+-        /// Creates a FilteredView on top of an existing static view. 
++        /// Creates a FilteredView on top of an existing static view.
+         /// </summary>
+         /// <param name="view">the static view to base the FilteredView upon</param>
+         /// <param name="key">the key for the filtered view (must be unique)</param>
+@@ -299,7 +323,7 @@ public FilteredView CreateFilteredView(StaticView view, string key, string descr
+ 
+             FilteredView filteredView = new FilteredView(view, key, description, mode, tags);
+             _filteredViews.Add(filteredView);
+-            
++
+             return filteredView;
+         }
+ 
+@@ -310,7 +334,7 @@ private void AssertThatTheViewKeyIsUnique(string key)
+                 throw new ArgumentException("A view with the key " + key + " already exists.");
+             }
+         }
+-        
++
+         private void AssertThatTheSoftwareSystemIsNotNull(SoftwareSystem softwareSystem)
+         {
+             if (softwareSystem == null)
+@@ -359,7 +383,7 @@ public void Hydrate()
+                 view.Model = Model;
+                 HydrateView(view);
+             }
+-            
++
+             foreach (DeploymentView view in _deploymentViews)
+             {
+                 if (!String.IsNullOrEmpty(view.SoftwareSystemId))
+@@ -369,7 +393,7 @@ public void Hydrate()
+                 view.Model = Model;
+                 HydrateView(view);
+             }
+-            
++
+             foreach (FilteredView filteredView in _filteredViews)
+             {
+                 filteredView.View = GetViewWithKey(filteredView.BaseViewKey);
+@@ -434,7 +458,7 @@ public void CopyLayoutInformationFrom(ViewSet source)
+                     destinationView.CopyLayoutInformationFrom(sourceView);
+                 }
+             }
+-            
++
+             foreach (DeploymentView sourceView in source.DeploymentViews)
+             {
+                 DeploymentView destinationView = FindDeploymentView(sourceView);
+@@ -484,7 +508,7 @@ public View GetViewWithKey(string key)
+             {
+                 throw new ArgumentException("A key must be specified.");
+             }
+-            
++
+             foreach (SystemLandscapeView view in SystemLandscapeViews)
+             {
+                 if (view.Key.Equals(key))
+@@ -555,4 +579,4 @@ public FilteredView GetFilteredViewWithKey(string key)
+         }
+ 
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/Structurizr.Examples/Arc42DocumentationExample.cs b/Structurizr.Examples/Arc42DocumentationExample.cs
+deleted file mode 100644
+index 2bc8f74..0000000
+--- a/Structurizr.Examples/Arc42DocumentationExample.cs
++++ /dev/null
+@@ -1,75 +0,0 @@
+-﻿using System.IO;
+-using Structurizr.Api;
+-using Structurizr.Documentation;
+-
+-namespace Structurizr.Examples
+-{
+-    
+-    /// <summary>
+-    /// An empty software architecture document using the arc42 template.
+-    /// 
+-    /// See https://structurizr.com/share/27791/documentation for the live version.
+-    /// </summary>
+-    public class Arc42DocumentationExample
+-    {
+-        
+-        private const long WorkspaceId = 27791;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Documentation - arc42", "An empty software architecture document using the arc42 template.");
+-            Model model = workspace.Model;
+-            ViewSet views = workspace.Views;
+-
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            user.Uses(softwareSystem, "Uses");
+-
+-            SystemContextView contextView = views.CreateSystemContextView(softwareSystem, "SystemContext", "An example of a System Context diagram.");
+-            contextView.AddAllSoftwareSystems();
+-            contextView.AddAllPeople();
+-
+-            Styles styles = views.Configuration.Styles;
+-            styles.Add(new ElementStyle(Tags.Person) { Shape = Shape.Person });
+-
+-            Arc42DocumentationTemplate template = new Arc42DocumentationTemplate(workspace);
+-
+-            // this is the Markdown version
+-            DirectoryInfo documentationRoot = new DirectoryInfo("Documentation" + Path.DirectorySeparatorChar + "arc42" + Path.DirectorySeparatorChar + "markdown");
+-            template.AddIntroductionAndGoalsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "01-introduction-and-goals.md")));
+-            template.AddConstraintsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "02-architecture-constraints.md")));
+-            template.AddContextAndScopeSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "03-system-scope-and-context.md")));
+-            template.AddSolutionStrategySection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "04-solution-strategy.md")));
+-            template.AddBuildingBlockViewSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "05-building-block-view.md")));
+-            template.AddRuntimeViewSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "06-runtime-view.md")));
+-            template.AddDeploymentViewSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "07-deployment-view.md")));
+-            template.AddCrosscuttingConceptsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "08-crosscutting-concepts.md")));
+-            template.AddArchitecturalDecisionsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "09-architecture-decisions.md")));
+-            template.AddRisksAndTechnicalDebtSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "10-quality-requirements.md")));
+-            template.AddQualityRequirementsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "11-risks-and-technical-debt.md")));
+-            template.AddGlossarySection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "12-glossary.md")));
+-
+-            // this is the AsciiDoc version
+-//            DirectoryInfo documentationRoot = new DirectoryInfo("Documentation" + Path.DirectorySeparatorChar + "arc42" + Path.DirectorySeparatorChar + "asciidoc");
+-//            template.AddIntroductionAndGoalsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "01-introduction-and-goals.adoc")));
+-//            template.AddConstraintsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "02-architecture-constraints.adoc")));
+-//            template.AddContextAndScopeSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "03-system-scope-and-context.adoc")));
+-//            template.AddSolutionStrategySection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "04-solution-strategy.adoc")));
+-//            template.AddBuildingBlockViewSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "05-building-block-view.adoc")));
+-//            template.AddRuntimeViewSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "06-runtime-view.adoc")));
+-//            template.AddDeploymentViewSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "07-deployment-view.adoc")));
+-//            template.AddCrosscuttingConceptsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "08-crosscutting-concepts.adoc")));
+-//            template.AddArchitecturalDecisionsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "09-architecture-decisions.adoc")));
+-//            template.AddRisksAndTechnicalDebtSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "10-quality-requirements.adoc")));
+-//            template.AddQualityRequirementsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "11-risks-and-technical-debt.adoc")));
+-//            template.AddGlossarySection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "12-glossary.adoc")));
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-        
+-    }
+-    
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/BigBankPlc.cs b/Structurizr.Examples/BigBankPlc.cs
+deleted file mode 100644
+index 48cebe0..0000000
+--- a/Structurizr.Examples/BigBankPlc.cs
++++ /dev/null
+@@ -1,266 +0,0 @@
+-﻿using System.Linq;
+-using Structurizr.Api;
+-using Structurizr.Core.Util;
+-using Structurizr.Documentation;
+-
+-namespace Structurizr.Examples
+-{
+-    
+-    /// <summary>
+-    /// This is an example workspace to illustrate the key features of Structurizr,
+-    /// based around a fictional Internet Banking System for Big Bank plc.
+-    ///
+-    /// The live workspace is available to view at https://structurizr.com/share/36141
+-    /// </summary>
+-    public class BigBankPlc
+-    {
+-        
+-        private const long WorkspaceId = 36141;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        private const string ExistingSystemTag = "Existing System";
+-        private const string BankStaffTag = "Bank Staff";
+-        private const string WebBrowserTag = "Web Browser";
+-        private const string MobileAppTag = "Mobile App";
+-        private const string DatabaseTag = "Database";
+-        private const string FailoverTag = "Failover";
+-
+-        public static Workspace Create()
+-        {
+-                Workspace workspace = new Workspace("Big Bank plc", "This is an example workspace to illustrate the key features of Structurizr, based around a fictional online banking system.");
+-                Model model = workspace.Model;
+-                ViewSet views = workspace.Views;
+-        
+-                model.Enterprise = new Enterprise("Big Bank plc");
+-        
+-                // people and software systems
+-                Person customer = model.AddPerson(Location.External, "Personal Banking Customer", "A customer of the bank, with personal bank accounts.");
+-        
+-                SoftwareSystem internetBankingSystem = model.AddSoftwareSystem(Location.Internal, "Internet Banking System", "Allows customers to view information about their bank accounts, and make payments.");
+-                customer.Uses(internetBankingSystem, "Uses");
+-        
+-                SoftwareSystem mainframeBankingSystem = model.AddSoftwareSystem(Location.Internal, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions, etc.");
+-                mainframeBankingSystem.AddTags(ExistingSystemTag);
+-                internetBankingSystem.Uses(mainframeBankingSystem, "Uses");
+-        
+-                SoftwareSystem emailSystem = model.AddSoftwareSystem(Location.Internal, "E-mail System", "The internal Microsoft Exchange e-mail system.");
+-                internetBankingSystem.Uses(emailSystem, "Sends e-mail using");
+-                emailSystem.AddTags(ExistingSystemTag);
+-                emailSystem.Delivers(customer, "Sends e-mails to");
+-        
+-                SoftwareSystem atm = model.AddSoftwareSystem(Location.Internal, "ATM", "Allows customers to withdraw cash.");
+-                atm.AddTags(ExistingSystemTag);
+-                atm.Uses(mainframeBankingSystem, "Uses");
+-                customer.Uses(atm, "Withdraws cash using");
+-        
+-                Person customerServiceStaff = model.AddPerson(Location.Internal, "Customer Service Staff", "Customer service staff within the bank.");
+-                customerServiceStaff.AddTags(BankStaffTag);
+-                customerServiceStaff.Uses(mainframeBankingSystem, "Uses");
+-                customer.InteractsWith(customerServiceStaff, "Asks questions to", "Telephone");
+-        
+-                Person backOfficeStaff = model.AddPerson(Location.Internal, "Back Office Staff", "Administration and support staff within the bank.");
+-                backOfficeStaff.AddTags(BankStaffTag);
+-                backOfficeStaff.Uses(mainframeBankingSystem, "Uses");
+-        
+-                // containers
+-                Container singlePageApplication = internetBankingSystem.AddContainer("Single-Page Application", "Provides all of the Internet banking functionality to customers via their web browser.", "JavaScript and Angular");
+-                singlePageApplication.AddTags(WebBrowserTag);
+-                Container mobileApp = internetBankingSystem.AddContainer("Mobile App", "Provides a limited subset of the Internet banking functionality to customers via their mobile device.", "Xamarin");
+-                mobileApp.AddTags(MobileAppTag);
+-                Container webApplication = internetBankingSystem.AddContainer("Web Application", "Delivers the static content and the Internet banking single page application.", "Java and Spring MVC");
+-                Container apiApplication = internetBankingSystem.AddContainer("API Application", "Provides Internet banking functionality via a JSON/HTTPS API.", "Java and Spring MVC");
+-                Container database = internetBankingSystem.AddContainer("Database", "Stores user registration information, hashed authentication credentials, access logs, etc.", "Relational Database Schema");
+-                database.AddTags(DatabaseTag);
+-        
+-                customer.Uses(webApplication, "Uses", "HTTPS");
+-                customer.Uses(singlePageApplication, "Uses", "");
+-                customer.Uses(mobileApp, "Uses", "");
+-                webApplication.Uses(singlePageApplication, "Delivers to the customer's web browser", "");
+-                apiApplication.Uses(database, "Reads from and writes to", "JDBC");
+-                apiApplication.Uses(mainframeBankingSystem, "Uses", "XML/HTTPS");
+-                apiApplication.Uses(emailSystem, "Sends e-mail using", "SMTP");
+-        
+-                // components
+-                // - for a real-world software system, you would probably want to extract the components using
+-                // - static analysis/reflection rather than manually specifying them all
+-                Component signinController = apiApplication.AddComponent("Sign In Controller", "Allows users to sign in to the Internet Banking System.", "Spring MVC Rest Controller");
+-                Component accountsSummaryController = apiApplication.AddComponent("Accounts Summary Controller", "Provides customers with a summary of their bank accounts.", "Spring MVC Rest Controller");
+-                Component resetPasswordController = apiApplication.AddComponent("Reset Password Controller", "Allows users to reset their passwords with a single use URL.", "Spring MVC Rest Controller");
+-                Component securityComponent = apiApplication.AddComponent("Security Component", "Provides functionality related to signing in, changing passwords, etc.", "Spring Bean");
+-                Component mainframeBankingSystemFacade = apiApplication.AddComponent("Mainframe Banking System Facade", "A facade onto the mainframe banking system.", "Spring Bean");
+-                Component emailComponent = apiApplication.AddComponent("E-mail Component", "Sends e-mails to users.", "Spring Bean");
+-
+-                apiApplication.Components.Where(c => "Spring MVC Rest Controller".Equals(c.Technology)).ToList().ForEach(c => singlePageApplication.Uses(c, "Makes API calls to", "JSON/HTTPS"));
+-                apiApplication.Components.Where(c => "Spring MVC Rest Controller".Equals(c.Technology)).ToList().ForEach(c => mobileApp.Uses(c, "Makes API calls to", "JSON/HTTPS"));
+-                signinController.Uses(securityComponent, "Uses");
+-                accountsSummaryController.Uses(mainframeBankingSystemFacade, "Uses");
+-                resetPasswordController.Uses(securityComponent, "Uses");
+-                resetPasswordController.Uses(emailComponent, "Uses");
+-                securityComponent.Uses(database, "Reads from and writes to", "JDBC");
+-                mainframeBankingSystemFacade.Uses(mainframeBankingSystem, "Uses", "XML/HTTPS");
+-                emailComponent.Uses(emailSystem, "Sends e-mail using");
+-        
+-                model.AddImplicitRelationships();
+-        
+-                // deployment nodes and container instances
+-                DeploymentNode developerLaptop = model.AddDeploymentNode("Development", "Developer Laptop", "A developer laptop.", "Microsoft Windows 10 or Apple macOS");
+-                DeploymentNode apacheTomcat = developerLaptop.AddDeploymentNode("Docker Container - Web Server", "A Docker container.", "Docker")
+-                        .AddDeploymentNode("Apache Tomcat", "An open source Java EE web server.", "Apache Tomcat 8.x", 1, DictionaryUtils.Create("Xmx=512M", "Xms=1024M", "Java Version=8"));
+-                apacheTomcat.Add(webApplication);
+-                apacheTomcat.Add(apiApplication);
+-        
+-                developerLaptop.AddDeploymentNode("Docker Container - Database Server", "A Docker container.", "Docker")
+-                        .AddDeploymentNode("Database Server", "A development database.", "Oracle 12c")
+-                        .Add(database);
+-        
+-                developerLaptop.AddDeploymentNode("Web Browser", "", "Chrome, Firefox, Safari, or Edge").Add(singlePageApplication);
+-        
+-                DeploymentNode customerMobileDevice = model.AddDeploymentNode("Live", "Customer's mobile device", "", "Apple iOS or Android");
+-                customerMobileDevice.Add(mobileApp);
+-        
+-                DeploymentNode customerComputer = model.AddDeploymentNode("Live", "Customer's computer", "", "Microsoft Windows or Apple macOS");
+-                customerComputer.AddDeploymentNode("Web Browser", "", "Chrome, Firefox, Safari, or Edge").Add(singlePageApplication);
+-        
+-                DeploymentNode bigBankDataCenter = model.AddDeploymentNode("Live", "Big Bank plc", "", "Big Bank plc data center");
+-        
+-                DeploymentNode liveWebServer = bigBankDataCenter.AddDeploymentNode("bigbank-web***", "A web server residing in the web server farm, accessed via F5 BIG-IP LTMs.", "Ubuntu 16.04 LTS", 4, DictionaryUtils.Create("Location=London and Reading"));
+-                liveWebServer.AddDeploymentNode("Apache Tomcat", "An open source Java EE web server.", "Apache Tomcat 8.x", 1, DictionaryUtils.Create("Xmx=512M", "Xms=1024M", "Java Version=8"))
+-                        .Add(webApplication);
+-        
+-                DeploymentNode liveApiServer = bigBankDataCenter.AddDeploymentNode("bigbank-api***", "A web server residing in the web server farm, accessed via F5 BIG-IP LTMs.", "Ubuntu 16.04 LTS", 8, DictionaryUtils.Create("Location=London and Reading"));
+-                liveApiServer.AddDeploymentNode("Apache Tomcat", "An open source Java EE web server.", "Apache Tomcat 8.x", 1, DictionaryUtils.Create("Xmx=512M", "Xms=1024M", "Java Version=8"))
+-                        .Add(apiApplication);
+-        
+-                DeploymentNode primaryDatabaseServer = bigBankDataCenter.AddDeploymentNode("bigbank-db01", "The primary database server.", "Ubuntu 16.04 LTS", 1, DictionaryUtils.Create("Location=London"))
+-                        .AddDeploymentNode("Oracle - Primary", "The primary, live database server.", "Oracle 12c");
+-                primaryDatabaseServer.Add(database);
+-
+-                DeploymentNode bigBankdb02 = bigBankDataCenter.AddDeploymentNode("bigbank-db02", "The secondary database server.", "Ubuntu 16.04 LTS", 1, DictionaryUtils.Create("Location=Reading"));
+-                bigBankdb02.AddTags(FailoverTag);
+-                DeploymentNode secondaryDatabaseServer = bigBankdb02.AddDeploymentNode("Oracle - Secondary", "A secondary, standby database server, used for failover purposes only.", "Oracle 12c");
+-                secondaryDatabaseServer.AddTags(FailoverTag);
+-                ContainerInstance secondaryDatabase = secondaryDatabaseServer.Add(database);
+-        
+-                model.Relationships.Where(r=>r.Destination.Equals(secondaryDatabase)).ToList().ForEach(r=>r.AddTags(FailoverTag));
+-                Relationship dataReplicationRelationship = primaryDatabaseServer.Uses(secondaryDatabaseServer, "Replicates data to", "");
+-                secondaryDatabase.AddTags(FailoverTag);
+-
+-                // views/diagrams
+-                SystemLandscapeView systemLandscapeView = views.CreateSystemLandscapeView("SystemLandscape", "The system landscape diagram for Big Bank plc.");
+-                systemLandscapeView.AddAllElements();
+-                systemLandscapeView.PaperSize = PaperSize.A5_Landscape;
+-        
+-                SystemContextView systemContextView = views.CreateSystemContextView(internetBankingSystem, "SystemContext", "The system context diagram for the Internet Banking System.");
+-                systemContextView.EnterpriseBoundaryVisible = false;
+-                systemContextView.AddNearestNeighbours(internetBankingSystem);
+-                systemContextView.PaperSize = PaperSize.A5_Landscape;
+-        
+-                ContainerView containerView = views.CreateContainerView(internetBankingSystem, "Containers", "The container diagram for the Internet Banking System.");
+-                containerView.Add(customer);
+-                containerView.AddAllContainers();
+-                containerView.Add(mainframeBankingSystem);
+-                containerView.Add(emailSystem);
+-                containerView.PaperSize = PaperSize.A5_Landscape;
+-        
+-                ComponentView componentView = views.CreateComponentView(apiApplication, "Components", "The component diagram for the API Application.");
+-                componentView.Add(mobileApp);
+-                componentView.Add(singlePageApplication);
+-                componentView.Add(database);
+-                componentView.AddAllComponents();
+-                componentView.Add(mainframeBankingSystem);
+-                componentView.Add(emailSystem);
+-                componentView.PaperSize = PaperSize.A5_Landscape;
+-        
+-                systemLandscapeView.AddAnimation(internetBankingSystem, customer, mainframeBankingSystem, emailSystem);
+-                systemLandscapeView.AddAnimation(atm);
+-                systemLandscapeView.AddAnimation(customerServiceStaff, backOfficeStaff);
+-        
+-                systemContextView.AddAnimation(internetBankingSystem);
+-                systemContextView.AddAnimation(customer);
+-                systemContextView.AddAnimation(mainframeBankingSystem);
+-                systemContextView.AddAnimation(emailSystem);
+-        
+-                containerView.AddAnimation(customer, mainframeBankingSystem, emailSystem);
+-                containerView.AddAnimation(webApplication);
+-                containerView.AddAnimation(singlePageApplication);
+-                containerView.AddAnimation(mobileApp);
+-                containerView.AddAnimation(apiApplication);
+-                containerView.AddAnimation(database);
+-        
+-                componentView.AddAnimation(singlePageApplication, mobileApp);
+-                componentView.AddAnimation(signinController, securityComponent, database);
+-                componentView.AddAnimation(accountsSummaryController, mainframeBankingSystemFacade, mainframeBankingSystem);
+-                componentView.AddAnimation(resetPasswordController, emailComponent, database);
+-        
+-                // dynamic diagrams and deployment diagrams are not available with the Free Plan
+-                DynamicView dynamicView = views.CreateDynamicView(apiApplication, "SignIn", "Summarises how the sign in feature works in the single-page application.");
+-                dynamicView.Add(singlePageApplication, "Submits credentials to", signinController);
+-                dynamicView.Add(signinController, "Calls isAuthenticated() on", securityComponent);
+-                dynamicView.Add(securityComponent, "select * from users where username = ?", database);
+-                dynamicView.PaperSize = PaperSize.A5_Landscape;
+-        
+-                DeploymentView developmentDeploymentView = views.CreateDeploymentView(internetBankingSystem, "DevelopmentDeployment", "An example development deployment scenario for the Internet Banking System.");
+-                developmentDeploymentView.Environment = "Development";
+-                developmentDeploymentView.Add(developerLaptop);
+-                developmentDeploymentView.PaperSize = PaperSize.A5_Landscape;
+-        
+-                DeploymentView liveDeploymentView = views.CreateDeploymentView(internetBankingSystem, "LiveDeployment", "An example live deployment scenario for the Internet Banking System.");
+-                liveDeploymentView.Environment = "Live";
+-                liveDeploymentView.Add(bigBankDataCenter);
+-                liveDeploymentView.Add(customerMobileDevice);
+-                liveDeploymentView.Add(customerComputer);
+-                liveDeploymentView.Add(dataReplicationRelationship);
+-                liveDeploymentView.PaperSize = PaperSize.A5_Landscape;
+-
+-                // colours, shapes and other diagram styling
+-                Styles styles = views.Configuration.Styles;
+-                styles.Add(new ElementStyle(Tags.SoftwareSystem) { Background = "#1168bd", Color = "#ffffff" });
+-                styles.Add(new ElementStyle(Tags.Container) { Background = "#438dd5", Color = "#ffffff" });
+-                styles.Add(new ElementStyle(Tags.Component) { Background = "#85bbf0", Color = "#000000" });
+-                styles.Add(new ElementStyle(Tags.Person) { Background = "#08427b", Color = "#ffffff", Shape = Shape.Person, FontSize = 22});
+-                styles.Add(new ElementStyle(ExistingSystemTag) { Background = "#999999", Color = "#ffffff"});
+-                styles.Add(new ElementStyle(BankStaffTag) { Background = "#999999",Color = "#ffffff" });
+-                styles.Add(new ElementStyle(WebBrowserTag) { Shape = Shape.WebBrowser });
+-                styles.Add(new ElementStyle(MobileAppTag) { Shape = Shape.MobileDeviceLandscape });
+-                styles.Add(new ElementStyle(DatabaseTag) { Shape = Shape.Cylinder });
+-                styles.Add(new ElementStyle(FailoverTag) { Opacity = 25 });
+-                styles.Add(new RelationshipStyle(FailoverTag) { Opacity = 25, Position = 70});
+-
+-                // documentation
+-                // - usually the documentation would be included from separate Markdown/AsciiDoc files, but this is just an example
+-                StructurizrDocumentationTemplate template = new StructurizrDocumentationTemplate(workspace);
+-                template.AddContextSection(internetBankingSystem, Format.Markdown,
+-                        "Here is some context about the Internet Banking System...\n" +
+-                                "![](embed:SystemLandscape)\n" +
+-                                "![](embed:SystemContext)\n" +
+-                                "### Internet Banking System\n...\n" +
+-                                "### Mainframe Banking System\n...\n");
+-                template.AddContainersSection(internetBankingSystem, Format.Markdown,
+-                        "Here is some information about the containers within the Internet Banking System...\n" +
+-                                "![](embed:Containers)\n" +
+-                                "### Web Application\n...\n" +
+-                                "### Database\n...\n");
+-                template.AddComponentsSection(webApplication, Format.Markdown,
+-                        "Here is some information about the API Application...\n" +
+-                                "![](embed:Components)\n" +
+-                                "### Sign in process\n" +
+-                                "Here is some information about the Sign In Controller, including how the sign in process works...\n" +
+-                                "![](embed:SignIn)");
+-                template.AddDevelopmentEnvironmentSection(internetBankingSystem, Format.AsciiDoc,
+-                        "Here is some information about how to set up a development environment for the Internet Banking System...\n" +
+-                                "image::embed:DevelopmentDeployment[]");
+-                template.AddDeploymentSection(internetBankingSystem, Format.AsciiDoc,
+-                        "Here is some information about the live deployment environment for the Internet Banking System...\n" +
+-                                "image::embed:LiveDeployment[]");
+-        
+-                return workspace;
+-        }
+-        
+-        static void Main()
+-        {
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, Create());
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/ClientSideEncryption.cs b/Structurizr.Examples/ClientSideEncryption.cs
+deleted file mode 100644
+index 691632a..0000000
+--- a/Structurizr.Examples/ClientSideEncryption.cs
++++ /dev/null
+@@ -1,44 +0,0 @@
+-﻿using Structurizr.Api;
+-using Structurizr.Encryption;
+-
+-namespace Structurizr.Examples
+-{
+-    
+-    /// <summary>
+-    /// This is an example of how to use client-side encryption.
+-    /// 
+-    /// You can see the workspace online at https://structurizr.com/share/41
+-    /// (the passphrase is "password")
+-    /// </summary>
+-    public class ClientSideEncryption
+-    {
+-
+-        private const long WorkspaceId = 41;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Client-side encrypted workspace", "This is a client-side encrypted workspace. The passphrase is 'password'.");
+-            Model model = workspace.Model;
+-
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            user.Uses(softwareSystem, "Uses");
+-
+-            ViewSet viewSet = workspace.Views;
+-            SystemContextView contextView = viewSet.CreateSystemContextView(softwareSystem, "SystemContext", "An example of a System Context diagram.");
+-            contextView.AddAllSoftwareSystems();
+-            contextView.AddAllPeople();
+-
+-            Styles styles = viewSet.Configuration.Styles;
+-            styles.Add(new ElementStyle(Tags.SoftwareSystem) { Background = "#d34407", Color = "#ffffff" });
+-            styles.Add(new ElementStyle(Tags.Person) { Background = "#f86628", Color = "#ffffff", Shape = Shape.Person });
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.EncryptionStrategy = new AesEncryptionStrategy("password");
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/CorporateBranding.cs b/Structurizr.Examples/CorporateBranding.cs
+deleted file mode 100644
+index 1c277d1..0000000
+--- a/Structurizr.Examples/CorporateBranding.cs
++++ /dev/null
+@@ -1,51 +0,0 @@
+-﻿using System.IO;
+-using Structurizr.Api;
+-using Structurizr.Documentation;
+-using Structurizr.Util;
+-
+-namespace Structurizr.Examples
+-{
+-    
+-    /// <summary>
+-    /// This is a simple example that illustrates the corporate branding features of Structurizr, including:
+-    ///  - A logo, which is included in diagrams and documentation.
+-    ///
+-    /// You can see the live workspace at https://structurizr.com/share/35031
+-    /// </summary>
+-    public class CorporateBranding
+-    {
+-     
+-        private const long WorkspaceId = 35031;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Corporate Branding", "This is a model of my software system.");
+-            Model model = workspace.Model;
+-    
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            user.Uses(softwareSystem, "Uses");
+-    
+-            ViewSet views = workspace.Views;
+-            SystemContextView contextView = views.CreateSystemContextView(softwareSystem, "SystemContext", "An example of a System Context diagram.");
+-            contextView.AddAllSoftwareSystems();
+-            contextView.AddAllPeople();
+-    
+-            Styles styles = views.Configuration.Styles;
+-            styles.Add(new ElementStyle(Tags.Person) { Shape = Shape.Person });
+-    
+-            StructurizrDocumentationTemplate template = new StructurizrDocumentationTemplate(workspace);
+-            template.AddContextSection(softwareSystem, Format.Markdown, "Here is some context about the software system...\n\n![](embed:SystemContext)");
+-    
+-            Branding branding = views.Configuration.Branding;
+-            branding.Logo = ImageUtils.GetImageAsDataUri(new FileInfo("structurizr-logo.png"));
+-    
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-    
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/FilteredViews.cs b/Structurizr.Examples/FilteredViews.cs
+deleted file mode 100644
+index 7cf9660..0000000
+--- a/Structurizr.Examples/FilteredViews.cs
++++ /dev/null
+@@ -1,53 +0,0 @@
+-﻿using Structurizr.Api;
+-
+-namespace Structurizr.Examples
+-{
+-    
+-    /// <summary>
+-    /// An example of how to use filtered views to show "before" and "after" views of a software system.
+-    /// 
+-    /// You can see the live diagrams at https://structurizr.com/public/19911 
+-    /// </summary>
+-    public class FilteredViews
+-    {
+-
+-        private const long WorkspaceId = 19911;
+-        private const string ApiKey = "";
+-        private const string ApiSecret = "";
+-
+-        private const string CurrentState = "Current State";
+-        private const string FutureState = "Future State";
+-        
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Filtered Views", "An example of using filtered views.");
+-            Model model = workspace.Model;
+-
+-            Person user = model.AddPerson("User", "A description of the user.");
+-            SoftwareSystem softwareSystemA = model.AddSoftwareSystem("Software System A", "A description of software system A.");
+-            SoftwareSystem softwareSystemB = model.AddSoftwareSystem("Software System B", "A description of software system B.");
+-            softwareSystemB.AddTags(FutureState);
+-
+-            user.Uses(softwareSystemA, "Uses for tasks 1 and 2").AddTags(CurrentState);
+-            user.Uses(softwareSystemA, "Uses for task 1").AddTags(FutureState);
+-            user.Uses(softwareSystemB, "Uses for task 2").AddTags(FutureState);
+-
+-            ViewSet views = workspace.Views;
+-            SystemLandscapeView systemLandscapeView = views.CreateSystemLandscapeView("EnterpriseContext", "An example Enterprise Context diagram.");
+-            systemLandscapeView.AddAllElements();
+-
+-            views.CreateFilteredView(systemLandscapeView, "CurrentState", "The current context.", FilterMode.Exclude, FutureState);
+-            views.CreateFilteredView(systemLandscapeView, "FutureState", "The future state context after Software System B is live.", FilterMode.Exclude, CurrentState);
+-
+-            Styles styles = views.Configuration.Styles;
+-            styles.Add(new ElementStyle(Tags.Element) { Color = "#ffffff" });
+-            styles.Add(new ElementStyle(Tags.SoftwareSystem) { Background = "#91a437", Shape = Shape.RoundedBox });
+-            styles.Add(new ElementStyle(Tags.Person) { Background = "#6a7b15", Shape = Shape.Person });
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-    
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/FinancialRiskSystem.cs b/Structurizr.Examples/FinancialRiskSystem.cs
+deleted file mode 100644
+index 31a31bf..0000000
+--- a/Structurizr.Examples/FinancialRiskSystem.cs
++++ /dev/null
+@@ -1,88 +0,0 @@
+-﻿using Structurizr.Api;
+-using System.IO;
+-using Structurizr.Documentation;
+-
+-namespace Structurizr.Examples
+-{
+-
+-    /// <summary>
+-    /// This is a simple (incomplete) example C4 model based upon the financial risk system
+-    /// architecture kata, which can be found at http://bit.ly/sa4d-risksystem
+-    /// 
+-    /// You can see the workspace online at https://structurizr.com/public/31
+-    /// </summary>
+-    public class FinancialRiskSystem
+-    {
+-
+-        private const long WorkspaceId = 31;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        private const string AlertTag = "Alert";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Financial Risk System", "This is a simple (incomplete) example C4 model based upon the financial risk system architecture kata, which can be found at http://bit.ly/sa4d-risksystem");
+-            Model model = workspace.Model;
+-
+-            SoftwareSystem financialRiskSystem = model.AddSoftwareSystem("Financial Risk System", "Calculates the bank's exposure to risk for product X.");
+-
+-            Person businessUser = model.AddPerson("Business User", "A regular business user.");
+-            businessUser.Uses(financialRiskSystem, "Views reports using");
+-
+-            Person configurationUser = model.AddPerson("Configuration User", "A regular business user who can also configure the parameters used in the risk calculations.");
+-            configurationUser.Uses(financialRiskSystem, "Configures parameters using");
+-
+-            SoftwareSystem tradeDataSystem = model.AddSoftwareSystem("Trade Data System", "The system of record for trades of type X.");
+-            financialRiskSystem.Uses(tradeDataSystem, "Gets trade data from");
+-
+-            SoftwareSystem referenceDataSystem = model.AddSoftwareSystem("Reference Data System", "Manages reference data for all counterparties the bank interacts with.");
+-            financialRiskSystem.Uses(referenceDataSystem, "Gets counterparty data from");
+-
+-            SoftwareSystem referenceDataSystemV2 = model.AddSoftwareSystem("Reference Data System v2.0", "Manages reference data for all counterparties the bank interacts with.");
+-            referenceDataSystemV2.AddTags("Future State");
+-            financialRiskSystem.Uses(referenceDataSystemV2, "Gets counterparty data from").AddTags("Future State");
+-
+-            SoftwareSystem emailSystem = model.AddSoftwareSystem("E-mail system", "The bank's Microsoft Exchange system.");
+-            financialRiskSystem.Uses(emailSystem, "Sends a notification that a report is ready to");
+-            emailSystem.Delivers(businessUser, "Sends a notification that a report is ready to", "E-mail message", InteractionStyle.Asynchronous);
+-
+-            SoftwareSystem centralMonitoringService = model.AddSoftwareSystem("Central Monitoring Service", "The bank's central monitoring and alerting dashboard.");
+-            financialRiskSystem.Uses(centralMonitoringService, "Sends critical failure alerts to", "SNMP", InteractionStyle.Asynchronous).AddTags(AlertTag);
+-
+-            SoftwareSystem activeDirectory = model.AddSoftwareSystem("Active Directory", "The bank's authentication and authorisation system.");
+-            financialRiskSystem.Uses(activeDirectory, "Uses for user authentication and authorisation");
+-
+-            ViewSet views = workspace.Views;
+-            SystemContextView contextView = views.CreateSystemContextView(financialRiskSystem, "Context", "An example System Context diagram for the Financial Risk System architecture kata.");
+-            contextView.AddAllSoftwareSystems();
+-            contextView.AddAllPeople();
+-
+-            Styles styles = views.Configuration.Styles;
+-            financialRiskSystem.AddTags("Risk System");
+-
+-            styles.Add(new ElementStyle(Tags.Element) { Color = "#ffffff", FontSize = 34 });
+-            styles.Add(new ElementStyle("Risk System") { Background = "#550000", Color = "#ffffff" });
+-            styles.Add(new ElementStyle(Tags.SoftwareSystem) { Width = 650, Height = 400, Background = "#801515", Shape = Shape.RoundedBox });
+-            styles.Add(new ElementStyle(Tags.Person) { Width = 550, Background = "#d46a6a", Shape = Shape.Person });
+-
+-            styles.Add(new RelationshipStyle(Tags.Relationship) { Thickness = 4, Dashed = false, FontSize = 32, Width = 400 });
+-            styles.Add(new RelationshipStyle(Tags.Synchronous) { Dashed = false });
+-            styles.Add(new RelationshipStyle(Tags.Asynchronous) { Dashed = true });
+-            styles.Add(new RelationshipStyle(AlertTag) { Color = "#ff0000" });
+-
+-            styles.Add(new ElementStyle("Future State") { Opacity = 30, Border = Border.Dashed });
+-            styles.Add(new RelationshipStyle("Future State") { Opacity = 30, Dashed = true });
+-
+-            StructurizrDocumentationTemplate template = new StructurizrDocumentationTemplate(workspace);
+-            DirectoryInfo documentationRoot = new DirectoryInfo("FinancialRiskSystem");
+-            template.AddContextSection(financialRiskSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "context.adoc")));
+-            template.AddFunctionalOverviewSection(financialRiskSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "functional-overview.md")));
+-            template.AddQualityAttributesSection(financialRiskSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "quality-attributes.md")));
+-            template.AddImages(documentationRoot);
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-    }
+-}
+diff --git a/Structurizr.Examples/GettingStarted.cs b/Structurizr.Examples/GettingStarted.cs
+deleted file mode 100644
+index a6d4df5..0000000
+--- a/Structurizr.Examples/GettingStarted.cs
++++ /dev/null
+@@ -1,42 +0,0 @@
+-using Structurizr.Api;
+-
+-namespace Structurizr.Examples
+-{
+-
+-    /// <summary>
+-    /// A "getting started" example that illustrates how to
+-    /// create a software architecture diagram using code.
+-    /// 
+-    /// The live workspace is available to view at https://structurizr.com/share/25441
+-    /// </summary>
+-    class GettingStarted
+-    {
+-
+-        private const long WorkspaceId = 25441;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Getting Started", "This is a model of my software system.");
+-            Model model = workspace.Model;
+-
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            user.Uses(softwareSystem, "Uses");
+-
+-            ViewSet viewSet = workspace.Views;
+-            SystemContextView contextView = viewSet.CreateSystemContextView(softwareSystem, "SystemContext", "An example of a System Context diagram.");
+-            contextView.AddAllSoftwareSystems();
+-            contextView.AddAllPeople();
+-
+-            Styles styles = viewSet.Configuration.Styles;
+-            styles.Add(new ElementStyle(Tags.SoftwareSystem) { Background = "#1168bd", Color = "#ffffff" });
+-            styles.Add(new ElementStyle(Tags.Person) { Background = "#08427b", Color = "#ffffff", Shape = Shape.Person });
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/HttpHealthChecks.cs b/Structurizr.Examples/HttpHealthChecks.cs
+deleted file mode 100644
+index 7fad45e..0000000
+--- a/Structurizr.Examples/HttpHealthChecks.cs
++++ /dev/null
+@@ -1,59 +0,0 @@
+-﻿using System;
+-using Structurizr.Api;
+-
+-namespace Structurizr.Examples
+-{
+-
+-    /// <summary>
+-    /// This is an example of how to use the HTTP-based health checks feature.
+-    /// 
+-    /// You can see the health checks running at https://structurizr.com/share/39441/health
+-    /// </summary>
+-    public class HttpHealthChecks
+-    {
+-
+-        private const long WorkspaceId = 39441;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        private const string DatabaseTag = "Database";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("HTTP-based health checks example", "An example of how to use the HTTP-based health checks feature");
+-            Model model = workspace.Model;
+-            ViewSet views = workspace.Views;
+-
+-            SoftwareSystem structurizr = model.AddSoftwareSystem("Structurizr", "A publishing platform for software architecture diagrams and documentation based upon the C4 model.");
+-            Container webApplication = structurizr.AddContainer("structurizr.com", "Provides all of the server-side functionality of Structurizr, serving static and dynamic content to users.", "Java and Spring MVC");
+-            Container database = structurizr.AddContainer("Database", "Stores information about users, workspaces, etc.", "Relational Database Schema");
+-            database.AddTags(DatabaseTag);
+-            webApplication.Uses(database, "Reads from and writes to", "JDBC");
+-
+-            DeploymentNode amazonWebServices = model.AddDeploymentNode("Amazon Web Services", "", "us-east-1");
+-            DeploymentNode pivotalWebServices = amazonWebServices.AddDeploymentNode("Pivotal Web Services", "Platform as a Service provider.", "Cloud Foundry");
+-            ContainerInstance liveWebApplication = pivotalWebServices.AddDeploymentNode("www.structurizr.com", "An open source Java EE web server.", "Apache Tomcat")
+-                .Add(webApplication);
+-            ContainerInstance liveDatabaseInstance = amazonWebServices.AddDeploymentNode("Amazon RDS", "Database as a Service provider.", "MySQL")
+-                .Add(database);
+-
+-            // add health checks to the container instances, which return a simple HTTP 200 to say everything is okay
+-            liveWebApplication.AddHealthCheck("Web Application is running", "https://www.structurizr.com/health");
+-            liveDatabaseInstance.AddHealthCheck("Database is accessible from Web Application", "https://www.structurizr.com/health/database");
+-
+-            // the pass/fail status from the health checks is used to supplement any deployment views that include the container instances that have health checks defined
+-            DeploymentView deploymentView = views.CreateDeploymentView(structurizr, "Deployment", "A deployment diagram showing the live environment.");
+-            deploymentView.Environment = "Live";
+-            deploymentView.AddAllDeploymentNodes();
+-
+-            views.Configuration.Styles.Add(new ElementStyle(Tags.Element) { Color = "#ffffff" });
+-            views.Configuration.Styles.Add(new ElementStyle(DatabaseTag) { Shape = Shape.Cylinder });
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            WorkspaceUtils.PrintWorkspaceAsJson(workspace);
+-            Console.ReadKey();
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/MicroservicesExample.cs b/Structurizr.Examples/MicroservicesExample.cs
+deleted file mode 100644
+index 90c6f6d..0000000
+--- a/Structurizr.Examples/MicroservicesExample.cs
++++ /dev/null
+@@ -1,104 +0,0 @@
+-﻿using Structurizr.Api;
+-
+-namespace Structurizr.Examples
+-{
+-    
+-    /// <summary>
+-    /// A simple example of what a microservices architecture might look like. This workspace also
+-    /// includes a dynamic view that demonstrates parallel sequences of events.
+-    ///
+-    /// The live version of the diagrams can be found at https://structurizr.com/public/4241
+-    /// </summary>
+-    public class MicroservicesExample
+-    {
+-       
+-        private const long WorkspaceId = 4241;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        private const string MicroserviceTag = "Microservice";
+-        private const string MessageBusTag = "Message Bus";
+-        private const string DataStoreTag = "Database";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Microservices example", "An example of a microservices architecture, which includes asynchronous and parallel behaviour.");
+-            Model model = workspace.Model;
+-    
+-            SoftwareSystem mySoftwareSystem = model.AddSoftwareSystem("Customer Information System", "Stores information ");
+-            Person customer = model.AddPerson("Customer", "A customer");
+-            Container customerApplication = mySoftwareSystem.AddContainer("Customer Application", "Allows customers to manage their profile.", "Angular");
+-    
+-            Container customerService = mySoftwareSystem.AddContainer("Customer Service", "The point of access for customer information.", "Java and Spring Boot");
+-            customerService.AddTags(MicroserviceTag);
+-            Container customerDatabase = mySoftwareSystem.AddContainer("Customer Database", "Stores customer information.", "Oracle 12c");
+-            customerDatabase.AddTags(DataStoreTag);
+-    
+-            Container reportingService = mySoftwareSystem.AddContainer("Reporting Service", "Creates normalised data for reporting purposes.", "Ruby");
+-            reportingService.AddTags(MicroserviceTag);
+-            Container reportingDatabase = mySoftwareSystem.AddContainer("Reporting Database", "Stores a normalised version of all business data for ad hoc reporting purposes.", "MySQL");
+-            reportingDatabase.AddTags(DataStoreTag);
+-    
+-            Container auditService = mySoftwareSystem.AddContainer("Audit Service", "Provides organisation-wide auditing facilities.", "C# .NET");
+-            auditService.AddTags(MicroserviceTag);
+-            Container auditStore = mySoftwareSystem.AddContainer("Audit Store", "Stores information about events that have happened.", "Event Store");
+-            auditStore.AddTags(DataStoreTag);
+-    
+-            Container messageBus = mySoftwareSystem.AddContainer("Message Bus", "Transport for business events.", "RabbitMQ");
+-            messageBus.AddTags(MessageBusTag);
+-    
+-            customer.Uses(customerApplication, "Uses");
+-            customerApplication.Uses(customerService, "Updates customer information using", "JSON/HTTPS", InteractionStyle.Synchronous);
+-            customerService.Uses(messageBus, "Sends customer update events to", "", InteractionStyle.Asynchronous);
+-            customerService.Uses(customerDatabase, "Stores data in", "JDBC", InteractionStyle.Synchronous);
+-            customerService.Uses(customerApplication, "Sends events to", "WebSocket", InteractionStyle.Asynchronous);
+-            messageBus.Uses(reportingService, "Sends customer update events to", "", InteractionStyle.Asynchronous);
+-            messageBus.Uses(auditService, "Sends customer update events to", "", InteractionStyle.Asynchronous);
+-            reportingService.Uses(reportingDatabase, "Stores data in", "", InteractionStyle.Synchronous);
+-            auditService.Uses(auditStore, "Stores events in", "", InteractionStyle.Synchronous);
+-    
+-            ViewSet views = workspace.Views;
+-    
+-            ContainerView containerView = views.CreateContainerView(mySoftwareSystem, "Containers", null);
+-            containerView.AddAllElements();
+-    
+-            DynamicView dynamicView = views.CreateDynamicView(mySoftwareSystem, "CustomerUpdateEvent", "This diagram shows what happens when a customer updates their details.");
+-            dynamicView.Add(customer, customerApplication);
+-            dynamicView.Add(customerApplication, customerService);
+-    
+-            dynamicView.Add(customerService, customerDatabase);
+-            dynamicView.Add(customerService, messageBus);
+-    
+-            dynamicView.StartParallelSequence();
+-            dynamicView.Add(messageBus, reportingService);
+-            dynamicView.Add(reportingService, reportingDatabase);
+-            dynamicView.EndParallelSequence();
+-    
+-            dynamicView.StartParallelSequence();
+-            dynamicView.Add(messageBus, auditService);
+-            dynamicView.Add(auditService, auditStore);
+-            dynamicView.EndParallelSequence();
+-
+-            dynamicView.StartParallelSequence();
+-            dynamicView.Add(customerService, "Confirms update to", customerApplication);
+-            dynamicView.EndParallelSequence();
+-
+-            Styles styles = views.Configuration.Styles;
+-            styles.Add(new ElementStyle(Tags.Element) { Color = "#000000" });
+-            styles.Add(new ElementStyle(Tags.Person) { Background = "#ffbf00", Shape = Shape.Person });
+-            styles.Add(new ElementStyle(Tags.Container) { Background = "#facc2E" });
+-            styles.Add(new ElementStyle(MessageBusTag) {Width = 1600, Shape = Shape.Pipe});
+-            styles.Add(new ElementStyle(MicroserviceTag) { Shape = Shape.Hexagon});
+-            styles.Add(new ElementStyle(DataStoreTag) { Background = "#f5da81", Shape = Shape.Cylinder });
+-            styles.Add(new RelationshipStyle(Tags.Relationship) { Routing = Routing.Orthogonal });
+-    
+-            styles.Add(new RelationshipStyle(Tags.Asynchronous) { Dashed = true });
+-            styles.Add(new RelationshipStyle(Tags.Synchronous) { Dashed = false });
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-    
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/ProcessView.cs b/Structurizr.Examples/ProcessView.cs
+new file mode 100644
+index 0000000..53e0dfe
+--- /dev/null
++++ b/Structurizr.Examples/ProcessView.cs
+@@ -0,0 +1,41 @@
++namespace Structurizr.Examples
++{
++    using System.IO;
++
++    using Structurizr.IO.Json;
++    using Structurizr.Util;
++
++    public sealed class ProcessView
++    {
++        public static void Main()
++        {
++            var workspace = new Workspace("Corporate Branding", "This is a model of my software system.");
++            var model = workspace.Model;
++
++            var processParent = model.AddProcess("TestProcessParent", "Das ist unsere 5Minds Test");
++            var processChild = model.AddProcess("TestProcessChild", "Das ist unsere 5Minds Test");
++
++            var views = workspace.Views;
++            var processView = views.CreateProcessView( "Processes", "An example of a System Context diagram.");
++            processView.AddAllElements();
++
++            var styles = views.Configuration.Styles;
++            styles.Add(new ElementStyle(Tags.Process) { Shape = Shape.Process });
++
++            var branding = views.Configuration.Branding;
++            branding.Logo = ImageUtils.GetImageAsDataUri(new FileInfo("structurizr-logo.png"));
++
++            var workspaceAsJson = "";
++
++            using (StringWriter stringWriter = new StringWriter())
++            {
++                JsonWriter jsonWriter = new JsonWriter(false);
++                jsonWriter.Write(workspace, stringWriter);
++
++                stringWriter.Flush();
++                workspaceAsJson = stringWriter.ToString();
++                System.Console.WriteLine(workspaceAsJson);
++            }
++        }
++    }
++}
+diff --git a/Structurizr.Examples/Structurizr.Examples.csproj b/Structurizr.Examples/Structurizr.Examples.csproj
+index 51c32d9..d7d788a 100644
+--- a/Structurizr.Examples/Structurizr.Examples.csproj
++++ b/Structurizr.Examples/Structurizr.Examples.csproj
+@@ -2,7 +2,6 @@
+   <PropertyGroup>
+     <OutputType>Exe</OutputType>
+     <TargetFramework>netcoreapp2.1</TargetFramework>
+-    <StartupObject>Structurizr.Examples.GettingStarted</StartupObject>
+     <IsPackable>false</IsPackable>
+   </PropertyGroup>
+   <ItemGroup>
+diff --git a/Structurizr.Examples/StructurizrDocumentationExample.cs b/Structurizr.Examples/StructurizrDocumentationExample.cs
+deleted file mode 100644
+index beeb8b1..0000000
+--- a/Structurizr.Examples/StructurizrDocumentationExample.cs
++++ /dev/null
+@@ -1,77 +0,0 @@
+-﻿using Structurizr.Api;
+-using System;
+-using System.Collections.Generic;
+-using System.IO;
+-using System.Text;
+-using Structurizr.Documentation;
+-
+-namespace Structurizr.Examples
+-{
+-
+-    /// <summary>
+-    /// An empty software architecture document using the Structurizr template.
+-    /// 
+-    /// See https://structurizr.com/share/14181/documentation for the live version.
+-    /// </summary>
+-    class StructurizrDocumentationExample
+-        {
+-
+-        private const long WorkspaceId = 14181;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Documentation - Structurizr", "An empty software architecture document using the Structurizr template.");
+-            Model model = workspace.Model;
+-            ViewSet views = workspace.Views;
+-
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            user.Uses(softwareSystem, "Uses");
+-
+-            SystemContextView contextView = views.CreateSystemContextView(softwareSystem, "SystemContext", "An example of a System Context diagram.");
+-            contextView.AddAllSoftwareSystems();
+-            contextView.AddAllPeople();
+-
+-            Styles styles = views.Configuration.Styles;
+-            styles.Add(new ElementStyle(Tags.Person) { Shape = Shape.Person });
+-
+-            StructurizrDocumentationTemplate template = new StructurizrDocumentationTemplate(workspace);
+-
+-            // this is the Markdown version
+-            DirectoryInfo documentationRoot = new DirectoryInfo("Documentation" + Path.DirectorySeparatorChar + "structurizr" + Path.DirectorySeparatorChar + "markdown");
+-            template.AddContextSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "01-context.md")));
+-            template.AddFunctionalOverviewSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "02-functional-overview.md")));
+-            template.AddQualityAttributesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "03-quality-attributes.md")));
+-            template.AddConstraintsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "04-constraints.md")));
+-            template.AddPrinciplesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "05-principles.md")));
+-            template.AddSoftwareArchitectureSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "06-software-architecture.md")));
+-            template.AddDataSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "07-data.md")));
+-            template.AddInfrastructureArchitectureSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "08-infrastructure-architecture.md")));
+-            template.AddDeploymentSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "09-deployment.md")));
+-            template.AddDevelopmentEnvironmentSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "10-development-environment.md")));
+-            template.AddOperationAndSupportSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "11-operation-and-support.md")));
+-            template.AddDecisionLogSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "12-decision-log.md")));
+-
+-            // this is the AsciiDoc version
+-//            DirectoryInfo documentationRoot = new DirectoryInfo("Documentation" + Path.DirectorySeparatorChar + "structurizr" + Path.DirectorySeparatorChar + "asciidoc");
+-//            template.AddContextSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "01-context.adoc")));
+-//            template.AddFunctionalOverviewSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "02-functional-overview.adoc")));
+-//            template.AddQualityAttributesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "03-quality-attributes.adoc")));
+-//            template.AddConstraintsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "04-constraints.adoc")));
+-//            template.AddPrinciplesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "05-principles.adoc")));
+-//            template.AddSoftwareArchitectureSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "06-software-architecture.adoc")));
+-//            template.AddDataSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "07-data.adoc")));
+-//            template.AddInfrastructureArchitectureSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "08-infrastructure-architecture.adoc")));
+-//            template.AddDeploymentSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "09-deployment.adoc")));
+-//            template.AddDevelopmentEnvironmentSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "10-development-environment.adoc")));
+-//            template.AddOperationAndSupportSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "11-operation-and-support.adoc")));
+-//            template.AddDecisionLogSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "12-decision-log.adoc")));
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-}
+diff --git a/Structurizr.Examples/StylingElements.cs b/Structurizr.Examples/StylingElements.cs
+deleted file mode 100644
+index 41224cf..0000000
+--- a/Structurizr.Examples/StylingElements.cs
++++ /dev/null
+@@ -1,56 +0,0 @@
+-using Structurizr.Api;
+-
+-namespace Structurizr.Examples
+-{
+-
+-    /// <summary>
+-    /// An example of how to style elements on diagrams.
+-    ///
+-    /// The live workspace is available to view at https://structurizr.com/share/36111
+-    /// </summary>
+-    class StylingElements
+-    {
+-
+-        private const long WorkspaceId = 36111;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Styling Elements", "This is a model of my software system.");
+-            Model model = workspace.Model;
+-
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            Container webApplication = softwareSystem.AddContainer("Web Application", "My web application.", "Java and Spring MVC");
+-            Container database = softwareSystem.AddContainer("Database", "My database.", "Relational database schema");
+-            user.Uses(webApplication, "Uses", "HTTPS");
+-            webApplication.Uses(database, "Reads from and writes to", "JDBC");
+-
+-            ViewSet views = workspace.Views;
+-            ContainerView containerView = views.CreateContainerView(softwareSystem, "containers", "An example of a container diagram.");
+-            containerView.AddAllElements();
+-
+-            Styles styles = workspace.Views.Configuration.Styles;
+-
+-            // example 1
+-//            styles.Add(new ElementStyle(Tags.Element) { Background = "#438dd5", Color = "#ffffff" });
+-
+-            // example 2
+-//            styles.Add(new ElementStyle(Tags.Element) { Color = "#ffffff" });
+-//            styles.Add(new ElementStyle(Tags.Person) { Background = "#08427b" });
+-//            styles.Add(new ElementStyle(Tags.Container) { Background = "#438dd5" });
+-
+-            // example 3
+-//            styles.Add(new ElementStyle(Tags.Element) { Color = "#ffffff" });
+-//            styles.Add(new ElementStyle(Tags.Person) { Background = "#08427b" , Shape = Shape.Person });
+-//            styles.Add(new ElementStyle(Tags.Container) { Background = "#438dd5" });
+-//            database.AddTags("Database");
+-//            styles.Add(new ElementStyle("Database") { Shape = Shape.Cylinder });
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/StylingRelationships.cs b/Structurizr.Examples/StylingRelationships.cs
+deleted file mode 100644
+index f399963..0000000
+--- a/Structurizr.Examples/StylingRelationships.cs
++++ /dev/null
+@@ -1,51 +0,0 @@
+-using System.Linq;
+-using Structurizr.Api;
+-
+-namespace Structurizr.Examples
+-{
+-
+-    /// <summary>
+-    /// An example of how to style relationships on diagrams.
+-    ///
+-    /// The live workspace is available to view at https://structurizr.com/share/36131
+-    /// </summary>
+-    class StylingRelationships
+-    {
+-
+-        private const long WorkspaceId = 36131;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Styling Relationships", "This is a model of my software system.");
+-            Model model = workspace.Model;
+-
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            Container webApplication = softwareSystem.AddContainer("Web Application", "My web application.", "Java and Spring MVC");
+-            Container database = softwareSystem.AddContainer("Database", "My database.", "Relational database schema");
+-            user.Uses(webApplication, "Uses", "HTTPS");
+-            webApplication.Uses(database, "Reads from and writes to", "JDBC");
+-
+-            ViewSet views = workspace.Views;
+-            ContainerView containerView = views.CreateContainerView(softwareSystem, "containers", "An example of a container diagram.");
+-            containerView.AddAllElements();
+-
+-            Styles styles = workspace.Views.Configuration.Styles;
+-
+-            // example 1
+-//            styles.Add(new RelationshipStyle(Tags.Relationship) { Color = "#ff0000" });
+-
+-            // example 2
+-//            model.Relationships.Where(r => "HTTPS".Equals(r.Technology)).ToList().ForEach(r => r.AddTags("HTTPS"));
+-//            model.Relationships.Where(r => "JDBC".Equals(r.Technology)).ToList().ForEach(r => r.AddTags("JDBC"));
+-//            styles.Add(new RelationshipStyle("HTTPS") { Color = "#ff0000" });
+-//            styles.Add(new RelationshipStyle("JDBC") { Color = "#0000ff" });
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/Theme.cs b/Structurizr.Examples/Theme.cs
+deleted file mode 100644
+index e610e80..0000000
+--- a/Structurizr.Examples/Theme.cs
++++ /dev/null
+@@ -1,40 +0,0 @@
+-using Structurizr.Api;
+-
+-namespace Structurizr.Examples
+-{
+-
+-    /// <summary>
+-    /// This is an example of how to use an external theme.
+-    /// 
+-    /// The live workspace is available to view at https://structurizr.com/share/38898
+-    /// </summary>
+-    class Theme
+-    {
+-
+-        private const long WorkspaceId = 38898;
+-        private const string ApiKey = "";
+-        private const string ApiSecret = "";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Theme", "This is a model of my software system.");
+-            Model model = workspace.Model;
+-
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            user.Uses(softwareSystem, "Uses");
+-
+-            ViewSet viewSet = workspace.Views;
+-            SystemContextView contextView = viewSet.CreateSystemContextView(softwareSystem, "SystemContext", "An example of a System Context diagram.");
+-            contextView.AddAllSoftwareSystems();
+-            contextView.AddAllPeople();
+-
+-            // add a theme
+-            viewSet.Configuration.Theme = "https://raw.githubusercontent.com/structurizr/dotnet/master/Structurizr.Examples/Theme/theme.json";
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-
+-    }
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/ViewpointsAndPerspectivesDocumentationExample.cs b/Structurizr.Examples/ViewpointsAndPerspectivesDocumentationExample.cs
+deleted file mode 100644
+index e4ffd13..0000000
+--- a/Structurizr.Examples/ViewpointsAndPerspectivesDocumentationExample.cs
++++ /dev/null
+@@ -1,65 +0,0 @@
+-﻿using System.IO;
+-using Structurizr.Api;
+-using Structurizr.Documentation;
+-
+-namespace Structurizr.Examples
+-{
+-    
+-    /// <summary>
+-    /// An empty software architecture document using the "Viewpoints and Perspectives" template.
+-    /// 
+-    /// See https://structurizr.com/share/36371/documentation for the live version.
+-    /// </summary>
+-    public class ViewpointsAndPerspectivesDocumentationExample
+-    {
+-        
+-        private const long WorkspaceId = 36371;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Documentation - Viewpoints and Perspectives", "An empty software architecture document using the Viewpoints and Perspectives template.");
+-            Model model = workspace.Model;
+-            ViewSet views = workspace.Views;
+-
+-            Person user = model.AddPerson("User", "A user of my software system.");
+-            SoftwareSystem softwareSystem = model.AddSoftwareSystem("Software System", "My software system.");
+-            user.Uses(softwareSystem, "Uses");
+-
+-            SystemContextView contextView = views.CreateSystemContextView(softwareSystem, "SystemContext", "An example of a System Context diagram.");
+-            contextView.AddAllSoftwareSystems();
+-            contextView.AddAllPeople();
+-
+-            Styles styles = views.Configuration.Styles;
+-            styles.Add(new ElementStyle(Tags.Person) { Shape = Shape.Person });
+-
+-            ViewpointsAndPerspectivesDocumentation template = new ViewpointsAndPerspectivesDocumentation(workspace);
+-
+-            // this is the Markdown version
+-            DirectoryInfo documentationRoot = new DirectoryInfo("Documentation" + Path.DirectorySeparatorChar + "viewpointsandperspectives" + Path.DirectorySeparatorChar + "markdown");
+-            template.AddIntroductionSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "01-introduction.md")));
+-            template.AddGlossarySection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "02-glossary.md")));
+-            template.AddSystemStakeholdersAndRequirementsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "03-system-stakeholders-and-requirements.md")));
+-            template.AddArchitecturalForcesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "04-architectural-forces.md")));
+-            template.AddArchitecturalViewsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "05-architectural-views")));
+-            template.AddSystemQualitiesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "06-system-qualities.md")));
+-            template.AddAppendicesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "07-appendices.md")));
+-
+-            // this is the AsciiDoc version
+-//            DirectoryInfo documentationRoot = new DirectoryInfo("Documentation" + Path.DirectorySeparatorChar + "viewpointsandperspectives" + Path.DirectorySeparatorChar + "asciidoc");
+-//            template.AddIntroductionSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "01-introduction.adoc")));
+-//            template.AddGlossarySection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "02-glossary.adoc")));
+-//            template.AddSystemStakeholdersAndRequirementsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "03-system-stakeholders-and-requirements.adoc")));
+-//            template.AddArchitecturalForcesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "04-architectural-forces.adoc")));
+-//            template.AddArchitecturalViewsSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "05-architectural-views")));
+-//            template.AddSystemQualitiesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "06-system-qualities.adoc")));
+-//            template.AddAppendicesSection(softwareSystem, new FileInfo(Path.Combine(documentationRoot.FullName, "07-appendices.adoc")));
+-
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-        
+-    }
+-    
+-}
+\ No newline at end of file
+diff --git a/Structurizr.Examples/WidgetsLimited.cs b/Structurizr.Examples/WidgetsLimited.cs
+deleted file mode 100644
+index 1ac468b..0000000
+--- a/Structurizr.Examples/WidgetsLimited.cs
++++ /dev/null
+@@ -1,88 +0,0 @@
+-﻿using System.Linq;
+-using Structurizr.Api;
+-using Structurizr.Documentation;
+-
+-namespace Structurizr.Examples
+-{
+-    
+-    /// <summary>
+-    /// This workspace contains a number of diagrams for a fictional reseller of widgets online.
+-    /// 
+-    /// You can see the workspace online at https://structurizr.com/public/14471 
+-    /// </summary>
+-    public class WidgetsLimited
+-    {
+-        
+-        private const long WorkspaceId = 14471;
+-        private const string ApiKey = "key";
+-        private const string ApiSecret = "secret";
+-
+-        private const string ExternalTag = "External";
+-        private const string InternalTag = "Internal";
+-
+-        static void Main()
+-        {
+-            Workspace workspace = new Workspace("Widgets Limited", "Sells widgets to customers online.");
+-            Model model = workspace.Model;
+-            ViewSet views = workspace.Views;
+-            Styles styles = views.Configuration.Styles;
+-    
+-            model.Enterprise = new Enterprise("Widgets Limited");
+-    
+-            Person customer = model.AddPerson(Location.External, "Customer", "A customer of Widgets Limited.");
+-            Person customerServiceUser = model.AddPerson(Location.Internal, "Customer Service Agent", "Deals with customer enquiries.");
+-            SoftwareSystem ecommerceSystem = model.AddSoftwareSystem(Location.Internal, "E-commerce System", "Allows customers to buy widgets online via the widgets.com website.");
+-            SoftwareSystem fulfilmentSystem = model.AddSoftwareSystem(Location.Internal, "Fulfilment System", "Responsible for processing and shipping of customer orders.");
+-            SoftwareSystem taxamo = model.AddSoftwareSystem(Location.External, "Taxamo", "Calculates local tax (for EU B2B customers) and acts as a front-end for Braintree Payments.");
+-            taxamo.Url = "https://www.taxamo.com";
+-            SoftwareSystem braintreePayments = model.AddSoftwareSystem(Location.External, "Braintree Payments", "Processes credit card payments on behalf of Widgets Limited.");
+-            braintreePayments.Url = "https://www.braintreepayments.com";
+-            SoftwareSystem jerseyPost = model.AddSoftwareSystem(Location.External, "Jersey Post", "Calculates worldwide shipping costs for packages.");
+-    
+-            model.People.Where(p => p.Location == Location.External).ToList().ForEach(p => p.AddTags(ExternalTag));
+-            model.People.Where(p => p.Location == Location.Internal).ToList().ForEach(p => p.AddTags(InternalTag));
+-    
+-            model.SoftwareSystems.Where(ss => ss.Location == Location.External).ToList().ForEach(ss => ss.AddTags(ExternalTag));
+-            model.SoftwareSystems.Where(ss => ss.Location == Location.Internal).ToList().ForEach(ss => ss.AddTags(InternalTag));
+-    
+-            customer.InteractsWith(customerServiceUser, "Asks questions to", "Telephone");
+-            customerServiceUser.Uses(ecommerceSystem, "Looks up order information using");
+-            customer.Uses(ecommerceSystem, "Places orders for widgets using");
+-            ecommerceSystem.Uses(fulfilmentSystem, "Sends order information to");
+-            fulfilmentSystem.Uses(jerseyPost, "Gets shipping charges from");
+-            ecommerceSystem.Uses(taxamo, "Delegates credit card processing to");
+-            taxamo.Uses(braintreePayments, "Uses for credit card processing");
+-    
+-            SystemLandscapeView systemLandscapeView = views.CreateSystemLandscapeView("SystemLandscape", "The system landscape for Widgets Limited.");
+-            systemLandscapeView.AddAllElements();
+-    
+-            SystemContextView ecommerceSystemContext = views.CreateSystemContextView(ecommerceSystem, "EcommerceSystemContext", "The system context diagram for the Widgets Limited e-commerce system.");
+-            ecommerceSystemContext.AddNearestNeighbours(ecommerceSystem);
+-            ecommerceSystemContext.Remove(customer.GetEfferentRelationshipWith(customerServiceUser));
+-    
+-            SystemContextView fulfilmentSystemContext = views.CreateSystemContextView(fulfilmentSystem, "FulfilmentSystemContext", "The system context diagram for the Widgets Limited fulfilment system.");
+-            fulfilmentSystemContext.AddNearestNeighbours(fulfilmentSystem);
+-    
+-            DynamicView dynamicView = views.CreateDynamicView("CustomerSupportCall", "A high-level overview of the customer support call process.");
+-            dynamicView.Add(customer, customerServiceUser);
+-            dynamicView.Add(customerServiceUser, ecommerceSystem);
+-    
+-            StructurizrDocumentationTemplate template = new StructurizrDocumentationTemplate(workspace);
+-            template.AddSection("System Landscape", Format.Markdown, "Here is some information about the Widgets Limited system landscape... ![](embed:SystemLandscape)");
+-            template.AddContextSection(ecommerceSystem, Format.Markdown, "This is the context section for the E-commerce System... ![](embed:EcommerceSystemContext)");
+-            template.AddContextSection(fulfilmentSystem, Format.Markdown, "This is the context section for the Fulfilment System... ![](embed:FulfilmentSystemContext)");
+-
+-            styles.Add(new ElementStyle(Tags.SoftwareSystem) { Shape = Shape.RoundedBox });
+-            styles.Add(new ElementStyle(Tags.Person) { Shape = Shape.Person });
+-    
+-            styles.Add(new ElementStyle(Tags.Element) { Color = "#ffffff" });
+-            styles.Add(new ElementStyle(ExternalTag) { Background = "#EC5381", Border = Border.Dashed });
+-            styles.Add(new ElementStyle(InternalTag) { Background = "#B60037" });
+-    
+-            StructurizrClient structurizrClient = new StructurizrClient(ApiKey, ApiSecret);
+-            structurizrClient.PutWorkspace(WorkspaceId, workspace);
+-        }
+-        
+-    }
+-    
+-}
+\ No newline at end of file
+diff --git a/test.json b/test.json
+new file mode 100644
+index 0000000..e69de29
+-- 
+2.24.1
+

@@ -11,6 +11,7 @@
         Cylinder,
         Pipe,
         Person,
+        Process,
         Robot,
         Folder,
         WebBrowser,

@@ -16,6 +16,22 @@ namespace Structurizr
         [DataMember(Name = "enterprise", EmitDefaultValue = false)]
         public Enterprise Enterprise { get; set; }
 
+        private HashSet<Process> _processes;
+
+        [DataMember(Name = "process", EmitDefaultValue = false)]
+        public ISet<Process> Processes
+        {
+            get
+            {
+                return new HashSet<Process>(_processes);
+            }
+
+            internal set
+            {
+                _processes = new HashSet<Process>(value);
+            }
+        }
+
         private HashSet<Person> _people;
 
         [DataMember(Name = "people", EmitDefaultValue = false)]
@@ -79,6 +95,7 @@ namespace Structurizr
 
         internal Model()
         {
+            _processes = new HashSet<Process>();
             _people = new HashSet<Person>();
             _softwareSystems = new HashSet<SoftwareSystem>();
             _deploymentNodes = new HashSet<DeploymentNode>();
@@ -167,6 +184,48 @@ namespace Structurizr
             }
         }
 
+        /// <summary>
+        /// Creates a person (location is unspecified) and adds it to the model
+        /// (unless one exists with the same name already.
+        /// </summary>
+        /// <param name="name">the name of the person (e.g. "Admin User" or "Bob the Business User")</param>
+        /// <param name="description">a short description of the person</param>
+        /// <returns>the Person instance created and added to the model (or null)</returns>
+        public Process AddProcess(string name, string description)
+        {
+            return AddProcess(Location.Unspecified, name, description);
+        }
+
+        /// <summary>
+        /// Creates a person (location is unspecified) and adds it to the model
+        /// (unless one exisrs with the same name already.
+        /// </summary>
+        /// <param name="location">the location of the person (e.g. internal, external, etc)</param>
+        /// <param name="name">the name of the person (e.g. "Admin User" or "Bob the Business User")</param>
+        /// <param name="description">a short description of the person</param>
+        /// <returns>the Person instance created and added to the model (or null)</returns>
+        public Process AddProcess(Location location, string name, string description)
+        {
+            if (GetPersonWithName(name) == null)
+            {
+                var process = new Process();
+                process.Location = location;
+                process.Name = name;
+                process.Description = description;
+
+                _processes.Add(process);
+
+                process.Id = _idGenerator.GenerateId(process);
+                AddElementToInternalStructures(process);
+
+                return process;
+            }
+            else {
+                return null;
+            }
+        }
+
+
         internal Container AddContainer(SoftwareSystem parent, string name, string description, string technology)
         {
             if (parent.GetContainerWithName(name) == null)
@@ -188,7 +247,7 @@ namespace Structurizr
                 return null;
             }
         }
-        
+
         internal ContainerInstance AddContainerInstance(DeploymentNode deploymentNode, Container container) {
             if (container == null) {
                 throw new ArgumentException("A container must be specified.");
@@ -258,7 +317,7 @@ namespace Structurizr
 
                 return component;
             }
-             
+
             throw new ArgumentException("A container named '" + name + "' already exists for this software system.");
         }
 
@@ -297,7 +356,7 @@ namespace Structurizr
                     Instances = instances,
                     Environment = environment
                 };
-                
+
                 if (properties != null) {
                     deploymentNode.Properties = properties;
                 }
@@ -314,7 +373,7 @@ namespace Structurizr
                 throw new ArgumentException("A deployment node named '" + name + "' already exists.");
             }
         }
-        
+
         /// <summary>
         /// Gets the DeploymentNode with the specified name.
         /// </summary>
@@ -349,7 +408,7 @@ namespace Structurizr
             if (AddRelationship(relationship)) {
                 return relationship;
             }
-            
+
             return null;
         }
 
@@ -479,7 +538,7 @@ namespace Structurizr
 
         internal void Hydrate()
         {
-            
+
             // add all of the elements to the model
             foreach (Person person in _people)
             {
@@ -523,7 +582,7 @@ namespace Structurizr
                     }
                 }
             }
-            
+
             _deploymentNodes.ToList().ForEach(HydrateDeploymentNodeRelationships);
         }
 
@@ -540,7 +599,7 @@ namespace Structurizr
                 AddElementToInternalStructures(containerInstance);
             }
         }
-        
+
         private void HydrateDeploymentNodeRelationships(DeploymentNode deploymentNode)
         {
             HydrateRelationships(deploymentNode);
@@ -593,7 +652,7 @@ namespace Structurizr
         {
             return _relationshipsById[id];
         }
-        
+
         /// <summary>
         /// Propagates all relationships from children to their parents. For example, if you have two components (AAA and BBB)
         /// in different software systems that have a relationship, calling this method will add the following
@@ -606,15 +665,15 @@ namespace Structurizr
 
             string descriptionKey = "D";
             string technologyKey = "T";
-            
+
             // source element -> destination element -> D/T -> possible values
             Dictionary<Element, Dictionary<Element, Dictionary<string, HashSet<string>>>> candidateRelationships = new Dictionary<Element, Dictionary<Element, Dictionary<string, HashSet<string>>>>();
-    
+
             foreach (Relationship relationship in Relationships)
             {
                 Element source = relationship.Source;
                 Element destination = relationship.Destination;
-    
+
                 while (source != null)
                 {
                     while (destination != null)
@@ -623,58 +682,58 @@ namespace Structurizr
                         {
                             if (propagatedRelationshipIsAllowed(source, destination))
                             {
-    
-                                if (!candidateRelationships.ContainsKey(source)) 
+
+                                if (!candidateRelationships.ContainsKey(source))
                                 {
                                     candidateRelationships.Add(source, new Dictionary<Element, Dictionary<string, HashSet<string>>>());
                                 }
-    
+
                                 if (!candidateRelationships[source].ContainsKey(destination))
                                 {
                                     candidateRelationships[source].Add(destination, new Dictionary<string, HashSet<string>>());
                                     candidateRelationships[source][destination].Add(descriptionKey, new HashSet<string>());
                                     candidateRelationships[source][destination].Add(technologyKey, new HashSet<string>());
                                 }
-    
+
                                 if (relationship.Description != null)
                                 {
                                     candidateRelationships[source][destination][descriptionKey].Add(relationship.Description);
                                 }
-    
+
                                 if (relationship.Technology != null)
                                 {
                                     candidateRelationships[source][destination][technologyKey].Add(relationship.Technology);
                                 }
                             }
                         }
-    
+
                         destination = destination.Parent;
                     }
-    
+
                     destination = relationship.Destination;
                     source = source.Parent;
                 }
             }
-    
+
             foreach (Element source in candidateRelationships.Keys)
             {
                 foreach (Element destination in candidateRelationships[source].Keys)
                 {
                     ISet<string> possibleDescriptions = candidateRelationships[source][destination][descriptionKey];
                     ISet<string> possibleTechnologies = candidateRelationships[source][destination][technologyKey];
-    
+
                     string description = "";
                     if (possibleDescriptions.Count == 1)
                     {
                         description = possibleDescriptions.First();
                     }
-    
+
                     string technology = "";
                     if (possibleTechnologies.Count == 1)
                     {
                         technology = possibleTechnologies.First();
                     }
-    
+
                     Relationship implicitRelationship = AddRelationship(source, destination, description, technology);
                     if (implicitRelationship != null)
                     {
@@ -682,7 +741,7 @@ namespace Structurizr
                     }
                 }
             }
-    
+
             return implicitRelationships;
         }
 

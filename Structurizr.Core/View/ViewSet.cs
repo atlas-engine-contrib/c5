@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 
 namespace Structurizr
 {
+    using Structurizr.Core.View;
 
     /// <summary>
     /// The set of views onto a software architecture model.
@@ -66,6 +67,18 @@ namespace Structurizr
             {
                 _systemContextViews = new HashSet<SystemContextView>(value);
             }
+        }
+
+        private HashSet<ProcessView> _processViews;
+        /// <summary>
+        /// The set of system context views.
+        /// </summary>
+        [DataMember(Name = "processViews", EmitDefaultValue = false)]
+        public ISet<ProcessView> ProcessViews
+        {
+            get => new HashSet<ProcessView>(_processViews);
+
+            internal set => _processViews = new HashSet<ProcessView>(value);
         }
 
         private HashSet<ContainerView> _containerViews;
@@ -171,6 +184,7 @@ namespace Structurizr
 
         internal ViewSet()
         {
+            _processViews = new HashSet<ProcessView>();
             _systemLandscapeViews = new HashSet<SystemLandscapeView>();
             _systemContextViews = new HashSet<SystemContextView>();
             _containerViews = new HashSet<ContainerView>();
@@ -186,6 +200,16 @@ namespace Structurizr
         {
             Model = model;
         }
+
+        public ProcessView CreateProcessView(string key, string description)
+        {
+            AssertThatTheViewKeyIsUnique(key);
+
+            var view = new ProcessView(Model, key, description);
+            _processViews.Add(view);
+            return view;
+        }
+
 
         public SystemLandscapeView CreateSystemLandscapeView(string key, string description)
         {
@@ -254,7 +278,7 @@ namespace Structurizr
             _dynamicViews.Add(view);
             return view;
         }
-        
+
         /// <summary>
         /// Creates a deployment view.
         /// </summary>
@@ -285,7 +309,7 @@ namespace Structurizr
 
 
         /// <summary>
-        /// Creates a FilteredView on top of an existing static view. 
+        /// Creates a FilteredView on top of an existing static view.
         /// </summary>
         /// <param name="view">the static view to base the FilteredView upon</param>
         /// <param name="key">the key for the filtered view (must be unique)</param>
@@ -299,7 +323,7 @@ namespace Structurizr
 
             FilteredView filteredView = new FilteredView(view, key, description, mode, tags);
             _filteredViews.Add(filteredView);
-            
+
             return filteredView;
         }
 
@@ -310,7 +334,7 @@ namespace Structurizr
                 throw new ArgumentException("A view with the key " + key + " already exists.");
             }
         }
-        
+
         private void AssertThatTheSoftwareSystemIsNotNull(SoftwareSystem softwareSystem)
         {
             if (softwareSystem == null)
@@ -359,7 +383,7 @@ namespace Structurizr
                 view.Model = Model;
                 HydrateView(view);
             }
-            
+
             foreach (DeploymentView view in _deploymentViews)
             {
                 if (!String.IsNullOrEmpty(view.SoftwareSystemId))
@@ -369,7 +393,7 @@ namespace Structurizr
                 view.Model = Model;
                 HydrateView(view);
             }
-            
+
             foreach (FilteredView filteredView in _filteredViews)
             {
                 filteredView.View = GetViewWithKey(filteredView.BaseViewKey);
@@ -434,7 +458,7 @@ namespace Structurizr
                     destinationView.CopyLayoutInformationFrom(sourceView);
                 }
             }
-            
+
             foreach (DeploymentView sourceView in source.DeploymentViews)
             {
                 DeploymentView destinationView = FindDeploymentView(sourceView);
@@ -484,7 +508,7 @@ namespace Structurizr
             {
                 throw new ArgumentException("A key must be specified.");
             }
-            
+
             foreach (SystemLandscapeView view in SystemLandscapeViews)
             {
                 if (view.Key.Equals(key))

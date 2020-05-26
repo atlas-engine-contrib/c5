@@ -7,6 +7,7 @@
         public const string Relationship = "Relationship";
 
         public const string Person = "Person";
+        public const string Process = "Process";
         public const string SoftwareSystem = "Software System";
         public const string Container = "Container";
         public const string Component = "Component";
@@ -16,6 +17,6 @@
 
         public const string DeploymentNode = "Deployment Node";
         public const string ContainerInstance = "Container Instance";
-        
+
     }
 }
