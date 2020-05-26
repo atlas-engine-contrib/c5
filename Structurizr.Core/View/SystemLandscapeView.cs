@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 
 namespace Structurizr
-{ 
+{
 
     /// <summary>
     /// Represents an System Landscape view that sits above the C4 model. This is the "big picture" view,
@@ -45,6 +45,7 @@ namespace Structurizr
         {
             AddAllSoftwareSystems();
             AddAllPeople();
+            AddAllProcesses();
         }
 
         /// <summary>
@@ -54,6 +55,7 @@ namespace Structurizr
         {
             AddNearestNeighbours(element, typeof(SoftwareSystem));
             AddNearestNeighbours(element, typeof(Person));
+            AddNearestNeighbours(element, typeof(Process));
         }
 
     }

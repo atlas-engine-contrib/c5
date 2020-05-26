@@ -16,8 +16,8 @@ namespace Structurizr.Examples
             var processChild = model.AddProcess("TestProcessChild", "Das ist unsere 5Minds Test");
 
             var views = workspace.Views;
-            var processView = views.CreateProcessView( "Processes", "An example of a System Context diagram.");
-            processView.AddAllElements();
+            var view = views.CreateSystemLandscapeView( "Processes", "An example of a System Context diagram.");
+            view.AddAllElements();
 
             var styles = views.Configuration.Styles;
             styles.Add(new ElementStyle(Tags.Process) { Shape = Shape.Process });

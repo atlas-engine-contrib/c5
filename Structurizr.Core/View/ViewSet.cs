@@ -69,18 +69,6 @@ namespace Structurizr
             }
         }
 
-        private HashSet<ProcessView> _processViews;
-        /// <summary>
-        /// The set of system context views.
-        /// </summary>
-        [DataMember(Name = "processViews", EmitDefaultValue = false)]
-        public ISet<ProcessView> ProcessViews
-        {
-            get => new HashSet<ProcessView>(_processViews);
-
-            internal set => _processViews = new HashSet<ProcessView>(value);
-        }
-
         private HashSet<ContainerView> _containerViews;
 
         /// <summary>
@@ -184,7 +172,6 @@ namespace Structurizr
 
         internal ViewSet()
         {
-            _processViews = new HashSet<ProcessView>();
             _systemLandscapeViews = new HashSet<SystemLandscapeView>();
             _systemContextViews = new HashSet<SystemContextView>();
             _containerViews = new HashSet<ContainerView>();
@@ -200,16 +187,6 @@ namespace Structurizr
         {
             Model = model;
         }
-
-        public ProcessView CreateProcessView(string key, string description)
-        {
-            AssertThatTheViewKeyIsUnique(key);
-
-            var view = new ProcessView(Model, key, description);
-            _processViews.Add(view);
-            return view;
-        }
-
 
         public SystemLandscapeView CreateSystemLandscapeView(string key, string description)
         {
