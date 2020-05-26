@@ -7,10 +7,19 @@
                 "description": "Das ist ein 5Minds Test Process",
                 "relationships": [
                     {
+                        "description": "Sendt Daten an das FremdSystem",
+                        "sourceId": "1",
+                        "destinationId": "3",
+                        "id": "4",
+                        "tags": "Relationship,Synchronous",
+                        "properties": {},
+                        "perspectives": []
+                    },
+                    {
                         "description": "Uses",
                         "sourceId": "1",
                         "destinationId": "2",
-                        "id": "3",
+                        "id": "5",
                         "tags": "Relationship,Synchronous",
                         "properties": {},
                         "perspectives": []
@@ -38,14 +47,26 @@
                 "name": "TestEvent",
                 "description": "Das ist ein 5Minds Test Event",
                 "relationships": [],
-                "id": "4",
+                "id": "6",
                 "tags": "Element,EventElement",
                 "properties": {},
                 "perspectives": []
             }
         ],
         "people": [],
-        "softwareSystems": [],
+        "softwareSystems": [
+            {
+                "location": "Internal",
+                "containers": [],
+                "name": "Email-FremdSystem",
+                "description": "Das ist ein Test FremdSystem.s",
+                "relationships": [],
+                "id": "3",
+                "tags": "Element,Software System",
+                "properties": {},
+                "perspectives": []
+            }
+        ],
         "deploymentNodes": []
     },
     "views": {
@@ -55,6 +76,10 @@
                 "key": "Processes",
                 "description": "An example of a System Context diagram.",
                 "elements": [
+                    {
+                        "properties": {},
+                        "id": "3"
+                    },
                     {
                         "properties": {},
                         "id": "1"
@@ -67,7 +92,11 @@
                 "relationships": [
                     {
                         "properties": {},
-                        "id": "3"
+                        "id": "4"
+                    },
+                    {
+                        "properties": {},
+                        "id": "5"
                     }
                 ]
             }

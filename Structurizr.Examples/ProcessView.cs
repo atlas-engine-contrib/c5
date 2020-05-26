@@ -15,6 +15,11 @@ namespace Structurizr.Examples
             var processParent = model.AddProcess("TestProcessParent", "Das ist ein 5Minds Test Process");
             var processChild = model.AddProcess("TestProcessChild", "Das ist ein 5Minds Test Process");
 
+            var system =
+                model.AddSoftwareSystem(Location.Internal, "Email-FremdSystem", "Das ist ein Test FremdSystem.s");
+
+            processParent.Uses(system, "Sendt Daten an das FremdSystem");
+
             processParent.Uses(processChild, "Uses");
 
             var eventElementChild = model.AddEvent("TestEvent", "Das ist ein 5Minds Test Event");
