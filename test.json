@@ -4,8 +4,18 @@
             {
                 "location": "Unspecified",
                 "name": "TestProcessParent",
-                "description": "Das ist unsere 5Minds Test",
-                "relationships": [],
+                "description": "Das ist ein 5Minds Test Process",
+                "relationships": [
+                    {
+                        "description": "Uses",
+                        "sourceId": "1",
+                        "destinationId": "2",
+                        "id": "3",
+                        "tags": "Relationship,Synchronous",
+                        "properties": {},
+                        "perspectives": []
+                    }
+                ],
                 "id": "1",
                 "tags": "Element,Process",
                 "properties": {},
@@ -14,10 +24,22 @@
             {
                 "location": "Unspecified",
                 "name": "TestProcessChild",
-                "description": "Das ist unsere 5Minds Test",
+                "description": "Das ist ein 5Minds Test Process",
                 "relationships": [],
                 "id": "2",
                 "tags": "Element,Process",
+                "properties": {},
+                "perspectives": []
+            }
+        ],
+        "event": [
+            {
+                "location": "Unspecified",
+                "name": "TestEvent",
+                "description": "Das ist ein 5Minds Test Event",
+                "relationships": [],
+                "id": "4",
+                "tags": "Element,EventElement",
                 "properties": {},
                 "perspectives": []
             }
@@ -27,9 +49,7 @@
         "deploymentNodes": []
     },
     "views": {
-        "systemLandscapeViews": [],
-        "systemContextViews": [],
-        "processViews": [
+        "systemLandscapeViews": [
             {
                 "animations": [],
                 "key": "Processes",
@@ -44,9 +64,15 @@
                         "id": "2"
                     }
                 ],
-                "relationships": []
+                "relationships": [
+                    {
+                        "properties": {},
+                        "id": "3"
+                    }
+                ]
             }
         ],
+        "systemContextViews": [],
         "containerViews": [],
         "componentViews": [],
         "dynamicViews": [],

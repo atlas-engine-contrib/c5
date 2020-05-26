@@ -8,6 +8,7 @@
 
         public const string Person = "Person";
         public const string Process = "Process";
+        public const string EventElement = "EventElement";
         public const string SoftwareSystem = "Software System";
         public const string Container = "Container";
         public const string Component = "Component";

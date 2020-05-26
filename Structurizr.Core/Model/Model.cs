@@ -32,6 +32,22 @@ namespace Structurizr
             }
         }
 
+        private HashSet<EventElement> _eventElements;
+
+        [DataMember(Name = "event", EmitDefaultValue = false)]
+        public ISet<EventElement> EventElements
+        {
+            get
+            {
+                return new HashSet<EventElement>(_eventElements);
+            }
+
+            internal set
+            {
+                _eventElements = new HashSet<EventElement>(value);
+            }
+        }
+
         private HashSet<Person> _people;
 
         [DataMember(Name = "people", EmitDefaultValue = false)]
@@ -95,6 +111,7 @@ namespace Structurizr
 
         internal Model()
         {
+            _eventElements = new HashSet<EventElement>();
             _processes = new HashSet<Process>();
             _people = new HashSet<Person>();
             _softwareSystems = new HashSet<SoftwareSystem>();
@@ -225,6 +242,47 @@ namespace Structurizr
             }
         }
 
+
+        /// <summary>
+        /// Creates a person (location is unspecified) and adds it to the model
+        /// (unless one exists with the same name already.
+        /// </summary>
+        /// <param name="name">the name of the person (e.g. "Admin User" or "Bob the Business User")</param>
+        /// <param name="description">a short description of the person</param>
+        /// <returns>the Person instance created and added to the model (or null)</returns>
+        public EventElement AddEvent(string name, string description)
+        {
+            return AddEvent(Location.Unspecified, name, description);
+        }
+
+        /// <summary>
+        /// Creates a person (location is unspecified) and adds it to the model
+        /// (unless one exisrs with the same name already.
+        /// </summary>
+        /// <param name="location">the location of the person (e.g. internal, external, etc)</param>
+        /// <param name="name">the name of the person (e.g. "Admin User" or "Bob the Business User")</param>
+        /// <param name="description">a short description of the person</param>
+        /// <returns>the Person instance created and added to the model (or null)</returns>
+        public EventElement AddEvent(Location location, string name, string description)
+        {
+            if (GetPersonWithName(name) == null)
+            {
+                var element = new EventElement();
+                element.Location = location;
+                element.Name = name;
+                element.Description = description;
+
+                _eventElements.Add(element);
+
+                element.Id = _idGenerator.GenerateId(element);
+                AddElementToInternalStructures(element);
+
+                return element;
+            }
+            else {
+                return null;
+            }
+        }
 
         internal Container AddContainer(SoftwareSystem parent, string name, string description, string technology)
         {

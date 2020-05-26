@@ -5,9 +5,9 @@ namespace Structurizr
     using System.Runtime.Serialization;
 
     [DataContract]
-    public sealed class Process : StaticStructureElement, IEquatable<Process>
+    public class EventElement : StaticStructureElement, IEquatable<EventElement>
     {
-        /// <summary>
+                /// <summary>
         /// The location of this person.
         /// </summary>
         [DataMember(Name = "location", EmitDefaultValue = true)]
@@ -33,7 +33,7 @@ namespace Structurizr
             }
         }
 
-        internal Process()
+        internal EventElement()
         {
         }
 
@@ -42,43 +42,43 @@ namespace Structurizr
             return new List<string>
             {
                 Structurizr.Tags.Element,
-                Structurizr.Tags.Process
+                Structurizr.Tags.EventElement
             };
         }
 
-        public new Relationship Delivers(Process destination, string description)
+        public new Relationship Delivers(EventElement destination, string description)
         {
             throw new InvalidOperationException();
         }
 
-        public new Relationship Delivers(Process destination, string description, string technology)
+        public new Relationship Delivers(EventElement destination, string description, string technology)
         {
             throw new InvalidOperationException();
         }
 
-        public new Relationship Delivers(Process destination, string description, string technology, InteractionStyle interactionStyle)
+        public new Relationship Delivers(EventElement destination, string description, string technology, InteractionStyle interactionStyle)
         {
             throw new InvalidOperationException();
         }
 
-        public Relationship InteractsWith(Process destination, string description)
+        public Relationship InteractsWith(EventElement destination, string description)
         {
             return Model.AddRelationship(this, destination, description);
         }
 
-        public Relationship InteractsWith(Process destination, string description, string technology)
+        public Relationship InteractsWith(EventElement destination, string description, string technology)
         {
             return Model.AddRelationship(this, destination, description, technology);
         }
 
-        public Relationship InteractsWith(Process destination, string description, string technology, InteractionStyle interactionStyle)
+        public Relationship InteractsWith(EventElement destination, string description, string technology, InteractionStyle interactionStyle)
         {
             return Model.AddRelationship(this, destination, description, technology, interactionStyle);
         }
 
-        public bool Equals(Process process)
+        public bool Equals(EventElement item)
         {
-            return this.Equals(process as Element);
+            return this.Equals(item as Element);
         }
     }
 }

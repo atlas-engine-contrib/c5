@@ -1,6 +1,6 @@
 ﻿namespace Structurizr
 {
-    
+
     /// <summary>
     /// This is the superclass for model elements that describe the static structure
     /// of a software system, namely Person, SoftwareSystem, Container and Component.
@@ -37,6 +37,39 @@
         /// <param name="technology">the technology details (e.g. JSON/HTTPS)</param>
         /// <param name="interactionStyle">the interaction style (sync vs async)</param>
         public Relationship Uses(SoftwareSystem destination, string description, string technology, InteractionStyle interactionStyle)
+        {
+            return Model.AddRelationship(this, destination, description, technology, interactionStyle);
+        }
+
+        /// <summary>
+        /// Adds a unidirectional "uses" style relationship between this element and another.
+        /// </summary>
+        /// <param name="destination"> the target of the relationship</param>
+        /// <param name="description">a description of the relationship (e.g. "uses", "gets data from", "sends data to")</param>
+        public Relationship Uses(Process destination, string description)
+        {
+            return Model.AddRelationship(this, destination, description);
+        }
+
+        /// <summary>
+        /// Adds a unidirectional "uses" style relationship between this element and another.
+        /// </summary>
+        /// <param name="destination"> the target of the relationship</param>
+        /// <param name="description">a description of the relationship (e.g. "uses", "gets data from", "sends data to")</param>
+        /// <param name="technology">the technology details (e.g. JSON/HTTPS)</param>
+        public Relationship Uses(Process destination, string description, string technology)
+        {
+            return Model.AddRelationship(this, destination, description, technology);
+        }
+
+        /// <summary>
+        /// Adds a unidirectional "uses" style relationship between this element and another.
+        /// </summary>
+        /// <param name="destination"> the target of the relationship</param>
+        /// <param name="description">a description of the relationship (e.g. "uses", "gets data from", "sends data to")</param>
+        /// <param name="technology">the technology details (e.g. JSON/HTTPS)</param>
+        /// <param name="interactionStyle">the interaction style (sync vs async)</param>
+        public Relationship Uses(Process destination, string description, string technology, InteractionStyle interactionStyle)
         {
             return Model.AddRelationship(this, destination, description, technology, interactionStyle);
         }
@@ -141,5 +174,5 @@
         }
 
     }
-    
+
 }

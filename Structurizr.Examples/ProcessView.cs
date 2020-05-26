@@ -12,8 +12,12 @@ namespace Structurizr.Examples
             var workspace = new Workspace("Corporate Branding", "This is a model of my software system.");
             var model = workspace.Model;
 
-            var processParent = model.AddProcess("TestProcessParent", "Das ist ein 5Minds Test");
-            var processChild = model.AddProcess("TestProcessChild", "Das ist ein 5Minds Test");
+            var processParent = model.AddProcess("TestProcessParent", "Das ist ein 5Minds Test Process");
+            var processChild = model.AddProcess("TestProcessChild", "Das ist ein 5Minds Test Process");
+
+            processParent.Uses(processChild, "Uses");
+
+            var eventElementChild = model.AddEvent("TestEvent", "Das ist ein 5Minds Test Event");
 
             var views = workspace.Views;
             var view = views.CreateSystemLandscapeView( "Processes", "An example of a System Context diagram.");
