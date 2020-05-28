@@ -18,7 +18,7 @@ namespace Structurizr.Examples
             var system =
                 model.AddSoftwareSystem(Location.Internal, "Email-FremdSystem", "Das ist ein Test FremdSystem.s");
 
-            processParent.Uses(system, "Sendt Daten an das FremdSystem");
+            processParent.Uses(system, "Sendet Daten an das FremdSystem");
 
             processParent.Uses(processChild, "Uses");
 
