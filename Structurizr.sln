@@ -74,9 +74,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{4FBA61
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "etc", "etc", "{043B24B2-2120-48D9-91B1-8BB426C1C369}"
-ProjectSection(SolutionItems) = preProject
-	appveyor.yml = appveyor.yml
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Structurizr.GraphViz", "Structurizr.GraphViz\Structurizr.GraphViz.csproj", "{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,6 +150,18 @@ Global
 		{833AD46A-DCE2-4D83-9D74-BF67BBE4396E}.Release|x64.Build.0 = Release|Any CPU
 		{833AD46A-DCE2-4D83-9D74-BF67BBE4396E}.Release|x86.ActiveCfg = Release|Any CPU
 		{833AD46A-DCE2-4D83-9D74-BF67BBE4396E}.Release|x86.Build.0 = Release|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Debug|x64.Build.0 = Debug|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Debug|x86.Build.0 = Debug|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Release|x64.ActiveCfg = Release|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Release|x64.Build.0 = Release|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Release|x86.ActiveCfg = Release|Any CPU
+		{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

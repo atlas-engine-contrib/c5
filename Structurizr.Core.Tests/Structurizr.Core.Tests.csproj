@@ -18,7 +18,7 @@
     <None Update="Documentation\arc42\architectural-decisions.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Documentation\arc42\building-block-view.md">
+    <None Update="Documentation\arc42\*.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Documentation\arc42\constraints.md">
