@@ -176,6 +176,10 @@ namespace Structurizr
 
             return null;
         }
+        public bool IsElementInView(Element element)
+        {
+            return _elements.Count(ev => ev.Element.Equals(element)) > 0;
+        }
 
         internal RelationshipView AddRelationship(Relationship relationship, string description, string order)
         {
@@ -187,11 +191,6 @@ namespace Structurizr
             }
 
             return relationshipView;
-        }
-
-        internal bool IsElementInView(Element element)
-        {
-            return _elements.Count(ev => ev.Element.Equals(element)) > 0;
         }
 
         private void AddRelationships(Element element)
@@ -316,6 +315,6 @@ namespace Structurizr
         {
             AutomaticLayout = null;
         }
-        
+
     }
 }

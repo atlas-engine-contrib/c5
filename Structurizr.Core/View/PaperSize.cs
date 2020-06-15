@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace Structurizr
 {
+    using System.Linq;
+
     public class PaperSize
     {
 
@@ -67,6 +69,12 @@ namespace Structurizr
             return paperSize;
         }
 
+        public static IEnumerable<PaperSize> GetOrderedPaperSizes(Orientation orientation)
+        {
+            return paperSizes
+                .Select(p => p.Value)
+                .Where(p => p.Orientation == orientation);
+        }
     }
 
     public enum Orientation
@@ -74,5 +82,4 @@ namespace Structurizr
         Portrait,
         Landscape
     }
-
 }

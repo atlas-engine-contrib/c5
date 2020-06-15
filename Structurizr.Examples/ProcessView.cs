@@ -28,12 +28,6 @@ namespace Structurizr.Examples
             var view = views.CreateSystemLandscapeView( "Processes", "An example of a System Context diagram.");
             view.AddAllElements();
 
-            var styles = views.Configuration.Styles;
-            styles.Add(new ElementStyle(Tags.Process) { Shape = Shape.Process });
-
-            var branding = views.Configuration.Branding;
-            branding.Logo = ImageUtils.GetImageAsDataUri(new FileInfo("structurizr-logo.png"));
-
             var workspaceAsJson = "";
 
             using (StringWriter stringWriter = new StringWriter())

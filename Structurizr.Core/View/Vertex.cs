@@ -9,9 +9,14 @@ namespace Structurizr
     [DataContract]
     public sealed class Vertex
     {
-
-        internal Vertex()
+        public Vertex()
         {
+        }
+
+        public Vertex(int? x, int? y)
+        {
+            this.X = x;
+            this.Y = y;
         }
 
         /// <summary>
@@ -19,13 +24,13 @@ namespace Structurizr
         /// </summary>
         [DataMember(Name="x", EmitDefaultValue=false)]
         public int? X { get; set; }
-  
-        
+
+
         /// <summary>
         /// The vertical position of the vertex when rendered.
         /// </summary>
         [DataMember(Name="y", EmitDefaultValue=false)]
         public int? Y { get; set; }
-  
+
     }
 }
