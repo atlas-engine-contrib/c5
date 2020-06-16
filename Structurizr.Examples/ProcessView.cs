@@ -20,6 +20,7 @@ namespace Structurizr.Examples
             var webShop = model.AddSoftwareSystem(Location.Internal, "5Minds Webshop", "Das ist unser toller WebShop");
             var apiShop = model.AddSoftwareSystem(Location.Internal, "5Minds Webshop Api", "Das ist unsere tolle API");
             var dataBase = model.AddSoftwareSystem(Location.Internal, "Database", "postgress01");
+            var deploymentNode = model.AddDeploymentNode("mainNode", "Meine Test Node", "master_node_1");
 
             customer.Uses(webShop, "kauft ein");
             webShop.Uses(apiShop, "ruft auf");
@@ -32,6 +33,13 @@ namespace Structurizr.Examples
             var containerView = views.CreateContainerView(webShop, "Container_View", "Eine Übersicht über die Shop API");
             containerView.Add(apiShop);
             containerView.Add(dataBase);
+
+            var deploymentView = views.CreateDeploymentView(webShop, "Deployment_View", "Test Deployment View");
+            deploymentView.Add(deploymentNode);
+
+            var systemContextView = views.CreateSystemContextView(webShop, "SystemContext_View", "Test SystemContext View");
+            systemContextView.Add(apiShop);
+            systemContextView.Add(dataBase);
 
             var styles = views.Configuration.Styles;
             styles.Add(new ElementStyle(Tags.Element) { Background = "#CCCCCC", Color = "#000000", Width = 600, Height = 300});

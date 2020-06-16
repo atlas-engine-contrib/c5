@@ -73,11 +73,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{4FBA61
 		docs\images\system-context-diagram-1.png = docs\images\system-context-diagram-1.png
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "etc", "etc", "{043B24B2-2120-48D9-91B1-8BB426C1C369}"
-	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Structurizr.GraphViz", "Structurizr.GraphViz\Structurizr.GraphViz.csproj", "{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}"
 EndProject
 Global
