@@ -1,5 +1,8 @@
 ﻿namespace Structurizr.GraphViz
 {
+    /// <summary>
+    /// Contains DPI constants.
+    /// </summary>
     public static class Constants
     {
         /// <summary>

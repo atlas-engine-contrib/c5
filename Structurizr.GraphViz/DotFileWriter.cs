@@ -1,37 +1,48 @@
 namespace Structurizr.GraphViz
 {
     using System;
-    using System.Globalization;
     using System.IO;
     using System.Linq;
 
+    /// <summary>
+    /// This class offers methods to create a dot file used by graphviz to auto layout the model.
+    /// </summary>
     public class DotFileWriter
     {
-        private const int CLUSTER_INTERNAL_MARGIN = 25;
+        private const int ClusterInternalMargin = 25;
 
-        private string directory;
-        private double rankSeparation;
-        private double nodeSeparation;
-        private RankDirection rankDirection;
-        private CultureInfo locale;
+        private readonly string _directory;
+        private readonly double _rankSeparation;
+        private readonly double _nodeSeparation;
+        private readonly RankDirection _rankDirection;
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        /// <param name="directory">Work directory where the dot file will be saved.</param>
+        /// <param name="rankDirection">Orientation used by graphviz to layout the graph.</param>
+        /// <param name="rankSeparation">Space between different ranks.</param>
+        /// <param name="nodeSeparation">Space between elements on the same rank.</param>
         public DotFileWriter(
             string directory,
             RankDirection rankDirection,
             double rankSeparation,
-            double nodeSeparation,
-            CultureInfo locale = null)
+            double nodeSeparation)
         {
-            this.directory = directory;
-            this.rankDirection = rankDirection;
-            this.rankSeparation = rankSeparation;
-            this.nodeSeparation = nodeSeparation;
-            this.locale = locale ?? CultureInfo.InvariantCulture;
+            this._directory = directory;
+            this._rankDirection = rankDirection;
+            this._rankSeparation = rankSeparation;
+            this._nodeSeparation = nodeSeparation;
         }
 
+        /// <summary>
+        /// Writes the view into a dot file. The path of the file will be directory + view.Key + ".dot"
+        /// </summary>
+        /// <param name="view">This view will be translated into a dot file.</param>
+        /// <param name="viewSet">This view set contains styling information required to create the dot file.</param>
         public void Write(View view, ViewSet viewSet)
         {
-            var fileName = Path.Combine(directory, view.Key + ".dot");
+            var fileName = Path.Combine(_directory, view.Key + ".dot");
             var viewName = view.GetType().Name;
 
             Console.WriteLine("Processing " + viewName + ": " + view.Key);
@@ -85,7 +96,7 @@ namespace Structurizr.GraphViz
             if (view.EnterpriseBoundaryVisible == true)
             {
                 writer.Write("  subgraph cluster_enterprise {\n");
-                writer.Write("    margin=" + CLUSTER_INTERNAL_MARGIN + "\n");
+                writer.Write("    margin=" + ClusterInternalMargin + "\n");
                 foreach (var elementView in view.Elements)
                 {
                     if (elementView.Element is Person personElement
@@ -103,14 +114,19 @@ namespace Structurizr.GraphViz
 
                 foreach (var elementView in view.Elements)
                 {
-                    if (elementView.Element is Person && ((Person)elementView.Element).Location != Location.Internal) {
+                    if (elementView.Element is Person person
+                        && person.Location != Location.Internal)
+                    {
                         this.WriteElement(view, viewSet, "  ", elementView.Element, writer);
                     }
-                    if (elementView.Element is SoftwareSystem && ((SoftwareSystem)elementView.Element).Location != Location.Internal) {
+                    if (elementView.Element is SoftwareSystem softwareSystem
+                        && softwareSystem.Location != Location.Internal)
+                    {
                         this.WriteElement(view, viewSet, "  ", elementView.Element, writer);
                     }
                 }
-            } else {
+            } else
+            {
                 foreach (var elementView in view.Elements)
                 {
                     this.WriteElement(view, viewSet, "  ", elementView.Element, writer);
@@ -123,7 +139,7 @@ namespace Structurizr.GraphViz
             if (view.EnterpriseBoundaryVisible == true)
             {
                 writer.Write("  subgraph cluster_enterprise {\n");
-                writer.Write("    margin=" + CLUSTER_INTERNAL_MARGIN + "\n");
+                writer.Write("    margin=" + ClusterInternalMargin + "\n");
                 foreach (var elementView in view.Elements)
                 {
                     if (elementView.Element is Person personElement
@@ -141,10 +157,14 @@ namespace Structurizr.GraphViz
 
                 foreach (var elementView in view.Elements)
                 {
-                    if (elementView.Element is Person && ((Person)elementView.Element).Location != Location.Internal) {
+                    if (elementView.Element is Person person
+                        && person.Location != Location.Internal)
+                    {
                         this.WriteElement(view, viewSet, "  ", elementView.Element, writer);
                     }
-                    if (elementView.Element is SoftwareSystem && ((SoftwareSystem)elementView.Element).Location != Location.Internal) {
+                    if (elementView.Element is SoftwareSystem  softwareSystem
+                        && softwareSystem.Location != Location.Internal)
+                    {
                         this.WriteElement(view, viewSet, "  ", elementView.Element, writer);
                     }
                 }
@@ -163,7 +183,7 @@ namespace Structurizr.GraphViz
             var softwareSystem = view.SoftwareSystem;
 
             writer.Write($"  subgraph cluster_{softwareSystem.Id} {{\n");
-            writer.Write($"    margin={CLUSTER_INTERNAL_MARGIN}\n");
+            writer.Write($"    margin={ClusterInternalMargin}\n");
 
             foreach (var elementView in view.Elements)
             {
@@ -192,7 +212,7 @@ namespace Structurizr.GraphViz
         {
             var container = view.Container;
             writer.Write($"  subgraph cluster_{container.Id} {{\n");
-            writer.Write("    margin=" + CLUSTER_INTERNAL_MARGIN + "\n");
+            writer.Write("    margin=" + ClusterInternalMargin + "\n");
 
             foreach (var elementView in view.Elements)
             {
@@ -204,7 +224,8 @@ namespace Structurizr.GraphViz
 
             writer.Write("  }\n");
 
-            foreach (var elementView in view.Elements) {
+            foreach (var elementView in view.Elements)
+            {
                 if (!elementView.Element.Parent.Equals(container))
                 {
                     this.WriteElement(view, viewSet, "  ", elementView.Element, writer);
@@ -225,7 +246,7 @@ namespace Structurizr.GraphViz
             else
             {
                 writer.Write($"  subgraph cluster_{element.Id} {{\n");
-                writer.Write("    margin=" + CLUSTER_INTERNAL_MARGIN + "\n");
+                writer.Write("    margin=" + ClusterInternalMargin + "\n");
                 foreach (var elementView in view.Elements)
                 {
                     if (elementView.Element.Parent.Equals(element))
@@ -233,6 +254,7 @@ namespace Structurizr.GraphViz
                         this.WriteElement(view, viewSet, "    ", elementView.Element, writer);
                     }
                 }
+
                 writer.Write("  }\n");
 
                 foreach (var elementView in view.Elements)
@@ -249,7 +271,7 @@ namespace Structurizr.GraphViz
         {
             foreach (var elementView in view.Elements)
             {
-                if (elementView.Element is DeploymentNode deploymentNode
+                if (elementView.Element is DeploymentNode
                     && elementView.Element.Parent == null)
                 {
                     this.Write(view, viewSet, (DeploymentNode)elementView.Element, writer, "");
@@ -288,7 +310,7 @@ namespace Structurizr.GraphViz
         {
             writer.Write("digraph {");
             writer.Write("\n");
-            writer.Write(string.Format("  graph [splines=polyline,rankdir={0},ranksep={1},nodesep={2},fontsize=5]", RankDirectionUtil.GetCode(rankDirection), rankSeparation, nodeSeparation));
+            writer.Write($"  graph [splines=polyline,rankdir={RankDirectionUtil.GetCode(_rankDirection)},ranksep={_rankSeparation},nodesep={_nodeSeparation},fontsize=5]");
             writer.Write("\n");
             writer.Write("  node [shape=box,fontsize=5]");
             writer.Write("\n");
@@ -341,7 +363,7 @@ namespace Structurizr.GraphViz
         private void Write(DeploymentView view, ViewSet viewSet, DeploymentNode deploymentNode, StreamWriter writer, string indent)
         {
             writer.Write($"{indent}subgraph cluster_{deploymentNode.Id} {{\n");
-            writer.Write($"{indent}  margin={CLUSTER_INTERNAL_MARGIN}\n");
+            writer.Write($"{indent}  margin={ClusterInternalMargin}\n");
             writer.Write($"{indent}  label=\"{deploymentNode.Id}: {deploymentNode.Name}\"\n");
 
             foreach (var child in deploymentNode.Children)
@@ -364,4 +386,3 @@ namespace Structurizr.GraphViz
         }
     }
 }
-
