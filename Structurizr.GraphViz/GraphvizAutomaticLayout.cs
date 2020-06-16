@@ -47,10 +47,11 @@ namespace Structurizr.GraphViz
         {
             Console.WriteLine(" - Running graphviz");
 
-            var startInfo = new ProcessStartInfo();
-            startInfo.Arguments = "dot " + Path.Combine(this.outputDirectory, view.Key + ".dot") + " -Tsvg -O";
+            var startInfo = new ProcessStartInfo("dot");
+            startInfo.Arguments = Path.Combine(this.outputDirectory, view.Key + ".dot") + " -Tsvg -O";
 
             var process = new Process();
+            process.StartInfo = startInfo;
             process.Start();
             process.WaitForExit();
         }
@@ -62,8 +63,10 @@ namespace Structurizr.GraphViz
             this.CreateSVGReader().ParseAndApplyLayout(view, viewSet);
         }
 
-        public void Apply(Workspace workspace, ViewSet viewSet)
+        public void Apply(Workspace workspace)
         {
+            var viewSet = workspace.Views;
+
             foreach (SystemLandscapeView view in workspace.Views.SystemLandscapeViews)
             {
                 this.Apply(view, viewSet);

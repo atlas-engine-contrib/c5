@@ -2,6 +2,7 @@ namespace Structurizr.Examples
 {
     using System.IO;
 
+    using Structurizr.GraphViz;
     using Structurizr.IO.Json;
     using Structurizr.Util;
 
@@ -9,30 +10,29 @@ namespace Structurizr.Examples
     {
         public static void Main()
         {
-            var workspace = new Workspace("Corporate Branding", "This is a model of my software system.");
+            var workspace = new Workspace("5Minds", "This is my Workspace!");
             var model = workspace.Model;
 
-            var processParent = model.AddProcess("TestProcessParent", "Das ist ein 5Minds Test Process");
-            var processChild = model.AddProcess("TestProcessChild", "Das ist ein 5Minds Test Process");
+            var customer = model.AddPerson(Location.Unspecified, "Kunde", "Dieser Kunde kauft im Shop ein.");
+            var webShop = model.AddSoftwareSystem(Location.Internal, "5Minds Webshop", "Das ist unser toller WebShop");
 
-            var system =
-                model.AddSoftwareSystem(Location.Internal, "Email-FremdSystem", "Das ist ein Test FremdSystem.s");
-
-            processParent.Uses(system, "Sendet Daten an das FremdSystem");
-
-            processParent.Uses(processChild, "Uses");
-
-            var eventElementChild = model.AddEvent("TestEvent", "Das ist ein 5Minds Test Event");
+            customer.Uses(webShop, "kauft ein");
 
             var views = workspace.Views;
-            var view = views.CreateSystemLandscapeView( "Processes", "An example of a System Context diagram.");
+            var view = views.CreateSystemLandscapeView( "FullView", "Eine komplette Übersicht über alle Systeme.");
             view.AddAllElements();
+
+            var styles = views.Configuration.Styles;
+            styles.Add(new ElementStyle(Tags.Element) { Background = "#CCCCCC", Color = "#000000", Width = 600, Height = 300});
 
             var workspaceAsJson = "";
 
-            using (StringWriter stringWriter = new StringWriter())
+            var layout = new GraphvizAutomaticLayout("./");
+            layout.Apply(workspace);
+
+            using (var stringWriter = new StringWriter())
             {
-                JsonWriter jsonWriter = new JsonWriter(false);
+                var jsonWriter = new JsonWriter(false);
                 jsonWriter.Write(workspace, stringWriter);
 
                 stringWriter.Flush();

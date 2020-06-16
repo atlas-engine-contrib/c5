@@ -4,6 +4,7 @@ namespace Structurizr.GraphViz
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Xml;
 
     public class SVGReader
@@ -30,13 +31,17 @@ namespace Structurizr.GraphViz
                 var document = new XmlDocument();
                 document.Load(stream);
 
-                var nodeList = document.SelectNodes("/svg/g[@class=\"graph\"]");
+                var namespaceManager = new XmlNamespaceManager(document.NameTable);
+                namespaceManager.AddNamespace("a", "http://www.w3.org/2000/svg");
+
+                var nodeList = document.SelectNodes("/a:svg/a:g[@class=\"graph\"]", namespaceManager);
                 var transform = nodeList[0].Attributes.GetNamedItem("transform").Value;
                 var translate = transform.Substring(transform.IndexOf("translate"));
-                var numbers = translate.Substring(translate.IndexOf("(") + 1, translate.IndexOf(")"));
+                var getNumbersRegex = "\\d+";
+                var numbers = Regex.Matches(translate, getNumbersRegex, RegexOptions.CultureInvariant);
 
-                var transformX = int.Parse(numbers.Split(' ')[0]);
-                var transformY = int.Parse(numbers.Split(' ')[1]);
+                var transformX = int.Parse(numbers[0].Value);
+                var transformY = int.Parse(numbers[1].Value);
 
                 var minimumX = int.MaxValue;
                 var minimumY = int.MaxValue;
@@ -51,8 +56,8 @@ namespace Structurizr.GraphViz
                         continue;
                     }
 
-                    var selectElementExpression = $"/svg/g/g[@id=\"{elementView.Id}\"]/polygon";
-                    nodeList = document.SelectNodes(selectElementExpression);
+                    var selectElementExpression = $"/a:svg/a:g/a:g[@id=\"{elementView.Id}\"]/a:polygon";
+                    nodeList = document.SelectNodes(selectElementExpression, namespaceManager);
                     if (nodeList.Count == 0)
                     {
                         continue;
@@ -78,8 +83,8 @@ namespace Structurizr.GraphViz
 
                 foreach (var relationshipView in view.Relationships)
                 {
-                    var selectRelationshipExpression = $"/svg/g/g[@id=\"{relationshipView.Id}\"]/path";
-                    nodeList = document.SelectNodes(selectRelationshipExpression);
+                    var selectRelationshipExpression = $"/a:svg/a:g/a:g[@id=\"{relationshipView.Id}\"]/a:path";
+                    nodeList = document.SelectNodes(selectRelationshipExpression, namespaceManager);
                     if (nodeList.Count == 0)
                     {
                         continue;
@@ -114,8 +119,8 @@ namespace Structurizr.GraphViz
                 }
 
                 // also take into account any clusters that might be rendered outside the nodes
-                var selectClusterExpression = "/svg/g/g[@class=\"cluster\"]/polygon";
-                nodeList = document.SelectNodes(selectClusterExpression);
+                var selectClusterExpression = "/a:svg/a:g/a:g[@class=\"cluster\"]/a:polygon";
+                nodeList = document.SelectNodes(selectClusterExpression, namespaceManager);
                 for (int i = 0; i < nodeList.Count; i++)
                 {
                     var points = nodeList[i].Attributes.GetNamedItem("points").Value.Split(' ');
