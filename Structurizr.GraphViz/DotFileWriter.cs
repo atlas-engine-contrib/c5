@@ -167,7 +167,9 @@ namespace Structurizr.GraphViz
 
             foreach (var elementView in view.Elements)
             {
-                if (elementView.Element.Parent.Equals(softwareSystem))
+                var element = elementView.Element;
+                var elementParent = element.Parent;
+                if (elementParent?.Equals(softwareSystem) == true)
                 {
                     this.WriteElement(view, viewSet, "    ", elementView.Element, writer);
                 }
@@ -175,8 +177,11 @@ namespace Structurizr.GraphViz
 
             writer.Write("  }\n");
 
-            foreach (var elementView in view.Elements) {
-                if (!elementView.Element.Parent.Equals(softwareSystem))
+            foreach (var elementView in view.Elements)
+            {
+                var element = elementView.Element;
+                var elementParent = element.Parent;
+                if (elementParent?.Equals(softwareSystem) == false)
                 {
                     this.WriteElement(view, viewSet, "  ", elementView.Element, writer);
                 }

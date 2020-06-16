@@ -1,8 +1,9 @@
-using System.Runtime.Serialization;
-using Structurizr.Documentation;
-
 namespace Structurizr
 {
+    using System.IO;
+    using System.Runtime.Serialization;
+
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Represents a Structurizr workspace, which is a wrapper for a software architecture model and the associated views.
@@ -53,5 +54,14 @@ namespace Structurizr
             this.Documentation.Hydrate();
         }
 
+        /// <summary>
+        /// Export this workspace into a json formatted file.
+        /// </summary>
+        /// <param name="filePath">Path to save the file.</param>
+        public void ExportToFile(string filePath)
+        {
+            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            File.WriteAllText(filePath, json);
+        }
     }
 }

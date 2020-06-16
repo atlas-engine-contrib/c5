@@ -1,6 +1,7 @@
 namespace Structurizr.Examples
 {
     using System.IO;
+    using System.Runtime.CompilerServices;
 
     using Structurizr.GraphViz;
     using Structurizr.IO.Json;
@@ -8,6 +9,8 @@ namespace Structurizr.Examples
 
     public sealed class ProcessView
     {
+        private const string EXPORT_FILE_PATH = "./data.json";
+
         public static void Main()
         {
             var workspace = new Workspace("5Minds", "This is my Workspace!");
@@ -15,29 +18,36 @@ namespace Structurizr.Examples
 
             var customer = model.AddPerson(Location.Unspecified, "Kunde", "Dieser Kunde kauft im Shop ein.");
             var webShop = model.AddSoftwareSystem(Location.Internal, "5Minds Webshop", "Das ist unser toller WebShop");
+            var apiShop = model.AddSoftwareSystem(Location.Internal, "5Minds Webshop Api", "Das ist unsere tolle API");
+            var dataBase = model.AddSoftwareSystem(Location.Internal, "Database", "postgress01");
 
             customer.Uses(webShop, "kauft ein");
+            webShop.Uses(apiShop, "ruft auf");
+            apiShop.Uses(dataBase, "ruft auf");
 
             var views = workspace.Views;
-            var view = views.CreateSystemLandscapeView( "FullView", "Eine komplette Übersicht über alle Systeme.");
-            view.AddAllElements();
+            var systemLandscapeView = views.CreateSystemLandscapeView( "System_Land_Scape", "Eine komplette Übersicht über alle Systeme.");
+            systemLandscapeView.AddAllElements();
+
+            var containerView = views.CreateContainerView(webShop, "Container_View", "Eine Übersicht über die Shop API");
+            containerView.Add(apiShop);
+            containerView.Add(dataBase);
 
             var styles = views.Configuration.Styles;
             styles.Add(new ElementStyle(Tags.Element) { Background = "#CCCCCC", Color = "#000000", Width = 600, Height = 300});
 
-            var workspaceAsJson = "";
-
             var layout = new GraphvizAutomaticLayout("./");
             layout.Apply(workspace);
 
-            using (var stringWriter = new StringWriter())
-            {
-                var jsonWriter = new JsonWriter(false);
-                jsonWriter.Write(workspace, stringWriter);
+            CleanUp();
+            workspace.ExportToFile(EXPORT_FILE_PATH);
+        }
 
-                stringWriter.Flush();
-                workspaceAsJson = stringWriter.ToString();
-                System.Console.WriteLine(workspaceAsJson);
+        private static void CleanUp()
+        {
+            if (File.Exists(EXPORT_FILE_PATH))
+            {
+                File.Delete(EXPORT_FILE_PATH);
             }
         }
     }
