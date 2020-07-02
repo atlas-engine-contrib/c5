@@ -1,4 +1,4 @@
-namespace Structurizr
+namespace AtlasEngine.Modelling.C5
 {
     using System.IO;
     using System.Runtime.Serialization;

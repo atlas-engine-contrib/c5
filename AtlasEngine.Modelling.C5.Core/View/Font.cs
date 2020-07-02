@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Structurizr
+namespace AtlasEngine.Modelling.C5
 {
 
     [DataContract]

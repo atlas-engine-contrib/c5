@@ -1,4 +1,4 @@
-﻿namespace Structurizr
+﻿namespace AtlasEngine.Modelling.C5
 {
 
     internal class ParallelSequenceCounter : SequenceCounter

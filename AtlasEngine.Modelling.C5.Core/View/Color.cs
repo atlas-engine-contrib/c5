@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Structurizr
+namespace AtlasEngine.Modelling.C5
 {
     public class Color
     {

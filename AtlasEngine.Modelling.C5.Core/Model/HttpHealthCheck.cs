@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Structurizr
+namespace AtlasEngine.Modelling.C5
 {
 
     /// <summary>

@@ -1,11 +1,8 @@
 namespace AtlasEngine.Modelling.C5.Examples
 {
     using System.IO;
-    using System.Runtime.CompilerServices;
 
     using AtlasEngine.Modelling.C5.GraphViz;
-    using AtlasEngine.Modelling.C5.IO.Json;
-    using AtlasEngine.Modelling.C5.Util;
 
     public sealed class ProcessView
     {

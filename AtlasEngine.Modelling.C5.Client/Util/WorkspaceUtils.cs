@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using AtlasEngine.Modelling.C5.IO.Json;
 
-namespace Structurizr
+namespace AtlasEngine.Modelling.C5
 {
 
     public class WorkspaceUtils

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Structurizr
+namespace AtlasEngine.Modelling.C5
 {
 
     /// <summary>

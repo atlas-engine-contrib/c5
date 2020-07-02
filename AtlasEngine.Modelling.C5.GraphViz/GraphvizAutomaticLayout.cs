@@ -4,7 +4,7 @@ namespace AtlasEngine.Modelling.C5.GraphViz
     using System.Diagnostics;
     using System.IO;
 
-    using Structurizr;
+    using AtlasEngine.Modelling.C5;
 
     using SystemProcess = System.Diagnostics.Process;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Structurizr
+namespace AtlasEngine.Modelling.C5
 {
     using System.Linq;
 
