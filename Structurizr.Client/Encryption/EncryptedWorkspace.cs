@@ -1,8 +1,8 @@
-﻿using Structurizr.IO.Json;
+﻿using AtlasEngine.Modelling.C5.IO.Json;
 using System.IO;
 using System.Runtime.Serialization;
 
-namespace Structurizr.Encryption
+namespace AtlasEngine.Modelling.C5.Encryption
 {
 
     [DataContract]

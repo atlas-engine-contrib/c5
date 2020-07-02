@@ -29,15 +29,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4ED0E8DB-8
 		docs\system-context-diagram.md = docs\system-context-diagram.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structurizr.Core", "Structurizr.Core\Structurizr.Core.csproj", "{2F8E45CF-19B0-4B49-B7C7-5A3F25A993BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtlasEngine.Modelling.C5.Core", "AtlasEngine.Modelling.C5.Core\AtlasEngine.Modelling.C5.Core.csproj", "{2F8E45CF-19B0-4B49-B7C7-5A3F25A993BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structurizr.Core.Tests", "Structurizr.Core.Tests\Structurizr.Core.Tests.csproj", "{349666B0-A760-4F3D-9D10-BE5E90C4A5E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtlasEngine.Modelling.C5.Core.Tests", "AtlasEngine.Modelling.C5.Core.Tests\AtlasEngine.Modelling.C5.Core.Tests.csproj", "{349666B0-A760-4F3D-9D10-BE5E90C4A5E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structurizr.Examples", "Structurizr.Examples\Structurizr.Examples.csproj", "{9BE0761B-F666-4691-9CF7-15CF6E911E17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtlasEngine.Modelling.C5.Examples", "AtlasEngine.Modelling.C5.Examples\AtlasEngine.Modelling.C5.Examples.csproj", "{9BE0761B-F666-4691-9CF7-15CF6E911E17}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structurizr.Client", "Structurizr.Client\Structurizr.Client.csproj", "{5A35FC5E-28E2-4534-9921-DA2AA1259FFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtlasEngine.Modelling.C5.Client", "AtlasEngine.Modelling.C5.Client\AtlasEngine.Modelling.C5.Client.csproj", "{5A35FC5E-28E2-4534-9921-DA2AA1259FFA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structurizr.Client.Tests", "Structurizr.Client.Tests\Structurizr.Client.Tests.csproj", "{833AD46A-DCE2-4D83-9D74-BF67BBE4396E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtlasEngine.Modelling.C5.Client.Tests", "AtlasEngine.Modelling.C5.Client.Tests\AtlasEngine.Modelling.C5.Client.Tests.csproj", "{833AD46A-DCE2-4D83-9D74-BF67BBE4396E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{4FBA617C-1ED8-411B-AE3D-3723BD77A7A2}"
 	ProjectSection(SolutionItems) = preProject
@@ -73,7 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{4FBA61
 		docs\images\system-context-diagram-1.png = docs\images\system-context-diagram-1.png
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Structurizr.GraphViz", "Structurizr.GraphViz\Structurizr.GraphViz.csproj", "{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtlasEngine.Modelling.C5.GraphViz", "AtlasEngine.Modelling.C5.GraphViz\AtlasEngine.Modelling.C5.GraphViz.csproj", "{7BC4B549-441C-4A38-B7D1-2B2B3395F18F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

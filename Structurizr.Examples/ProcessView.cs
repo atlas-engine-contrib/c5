@@ -1,11 +1,11 @@
-namespace Structurizr.Examples
+namespace AtlasEngine.Modelling.C5.Examples
 {
     using System.IO;
     using System.Runtime.CompilerServices;
 
-    using Structurizr.GraphViz;
-    using Structurizr.IO.Json;
-    using Structurizr.Util;
+    using AtlasEngine.Modelling.C5.GraphViz;
+    using AtlasEngine.Modelling.C5.IO.Json;
+    using AtlasEngine.Modelling.C5.Util;
 
     public sealed class ProcessView
     {

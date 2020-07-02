@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 
-namespace Structurizr.Core.Tests.View
+namespace AtlasEngine.Modelling.C5.Core.Tests.View
 {
 
     public class RelationshipStyleTests

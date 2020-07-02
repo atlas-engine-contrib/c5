@@ -11,8 +11,8 @@ However, the following characteristics of the elements can be customized:
 - Background colour (HTML hex value)
 - Text colour (HTML hex value)
 - Font size (pixels)
-- Shape (see the [Shape](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/View/Shape.cs) enum)
-- Border (Solid or Dashed; see the [Border](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/View/Border.cs) enum)
+- Shape (see the [Shape](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/View/Shape.cs) enum)
+- Border (Solid or Dashed; see the [Border](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/View/Border.cs) enum)
 - Opacity (an integer between 0 and 100)
 
 ## Tagging elements
@@ -26,11 +26,11 @@ Person | "Element", "Person"
 Container | "Element", "Container"
 Component | "Element", "Component"
 
-All of these tags are defined as constants in the [Tags](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/Model/Tags.cs) class. As we'll see shortly, you can also add your own custom tags to elements using the ```AddTags()``` method on the element.
+All of these tags are defined as constants in the [Tags](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/Model/Tags.cs) class. As we'll see shortly, you can also add your own custom tags to elements using the ```AddTags()``` method on the element.
 
 ## Colour
 
-To style an element, simply create an [ElementStyle](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/View/ElementStyle.cs) for a particular tag and specify the characteristics that you would like to change. For example, you can change the colour of all elements as follows.
+To style an element, simply create an [ElementStyle](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/View/ElementStyle.cs) for a particular tag and specify the characteristics that you would like to change. For example, you can change the colour of all elements as follows.
 
 ```c#
 Styles styles = workspace.Views.Configuration.Styles;
@@ -77,4 +77,4 @@ Structurizr will automatically add all element styles to a diagram key, showing 
 
 ![The diagram key](images/styling-elements-6.png)
 
-You can find the code for this example at [StylingElements.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/StylingElements.cs) and the live example workspace at [https://structurizr.com/share/36111](https://structurizr.com/share/36111).
+You can find the code for this example at [StylingElements.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/StylingElements.cs) and the live example workspace at [https://structurizr.com/share/36111](https://structurizr.com/share/36111).

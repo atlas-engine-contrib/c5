@@ -4,7 +4,7 @@ Structurizr for .NET includes an implementation of the [arc42 documentation temp
 
 ## Example
 
-To use this template, create an instance of the [Arc42DocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/Documentation/Arc42DocumentationTemplate.cs) class.
+To use this template, create an instance of the [Arc42DocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/Documentation/Arc42DocumentationTemplate.cs) class.
 You can then add documentation sections as needed, each associated with a software system in your software architecture model, using Markdown or AsciiDoc. For example:
 
 ```c#
@@ -26,7 +26,7 @@ template.AddGlossarySection(softwareSystem, new FileInfoPath.Combine(documentati
 ```
 
 Structurizr will create navigation controls based upon the the sections in the documentation, and the software systems they have been associated with.
-See [Arc42DocumentationExample.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/Arc42DocumentationExample.cs) for the full code, and [https://structurizr.com/share/27791/documentation](https://structurizr.com/share/27791/documentation) to see the rendered documentation.
+See [Arc42DocumentationExample.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/Arc42DocumentationExample.cs) for the full code, and [https://structurizr.com/share/27791/documentation](https://structurizr.com/share/27791/documentation) to see the rendered documentation.
 
 ## More information
 

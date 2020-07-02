@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
-using Structurizr.Core.View;
-using Structurizr.Util;
+using AtlasEngine.Modelling.C5.Core.View;
+using AtlasEngine.Modelling.C5.Util;
 
 namespace Structurizr
 {

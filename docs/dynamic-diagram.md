@@ -22,7 +22,7 @@ dynamicView.Add(signinController, "Calls isAuthenticated() on", securityComponen
 dynamicView.Add(securityComponent, "select * from users u where username = ?", database);
 ```
 
-See [BigBankPlc.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/BigBankPlc.cs) for the full code, and [https://structurizr.com/share/36141#SignIn](https://structurizr.com/share/36141#SignIn) for the diagram.
+See [BigBankPlc.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/BigBankPlc.cs) for the full code, and [https://structurizr.com/share/36141#SignIn](https://structurizr.com/share/36141#SignIn) for the diagram.
 
 ### Adding relationships
 
@@ -30,4 +30,4 @@ In order to add a relationship between two elements to a dynamic view, that rela
 
 ### Parallel behaviour
 
-Showing parallel behaviour is also possible using the ```startParallelSequence()``` and ```endParallelSequence()``` methods on the ```DynamicView``` class. See [MicroservicesExample.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/MicroservicesExample.cs) and [https://structurizr.com/share/4241#CustomerUpdateEvent](https://structurizr.com/share/4241#CustomerUpdateEvent) for an example.
+Showing parallel behaviour is also possible using the ```startParallelSequence()``` and ```endParallelSequence()``` methods on the ```DynamicView``` class. See [MicroservicesExample.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/MicroservicesExample.cs) and [https://structurizr.com/share/4241#CustomerUpdateEvent](https://structurizr.com/share/4241#CustomerUpdateEvent) for an example.

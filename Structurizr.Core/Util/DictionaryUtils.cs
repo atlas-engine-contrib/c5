@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Structurizr.Core.Util
+namespace AtlasEngine.Modelling.C5.Core.Util
 {
     
     public class DictionaryUtils

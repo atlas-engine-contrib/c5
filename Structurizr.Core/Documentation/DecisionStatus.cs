@@ -1,4 +1,4 @@
-﻿namespace Structurizr.Documentation
+﻿namespace AtlasEngine.Modelling.C5.Documentation
 {
 
     /// <summary>

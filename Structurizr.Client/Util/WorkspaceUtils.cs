@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Structurizr.IO.Json;
+using AtlasEngine.Modelling.C5.IO.Json;
 
 namespace Structurizr
 {

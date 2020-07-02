@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Structurizr.Api.Tests
+namespace AtlasEngine.Modelling.C5.Api.Tests
 {
     
     public class Md5DigestTests

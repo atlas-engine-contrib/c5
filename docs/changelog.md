@@ -68,8 +68,8 @@
 - Added support for the HTTP-based health checks feature.
 - Added an ```EndParallelSequence(boolean)``` method to the ```DynamicView``` class, which allows sequence numbering to continue.
 - Added support for decision records.
-- Moved PlantUML support to a separate Structurizr.PlantUML project.
-- Separated the API client from the core library, and created a new Structurizr.Client project.
+- Moved PlantUML support to a separate AtlasEngine.Modelling.C5.PlantUML project.
+- Separated the API client from the core library, and created a new AtlasEngine.Modelling.C5.Client project.
 - Renamed the "type" property on Section to "title".
 
 ## 0.7.2

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Structurizr.Documentation
+namespace AtlasEngine.Modelling.C5.Documentation
 {
 
     [DataContract]

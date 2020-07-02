@@ -5,8 +5,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Structurizr.Client\Structurizr.Client.csproj" />
-    <ProjectReference Include="..\Structurizr.GraphViz\Structurizr.GraphViz.csproj" />
+    <ProjectReference Include="..\AtlasEngine.Modelling.C5.Client\AtlasEngine.Modelling.C5.Client.csproj" />
+    <ProjectReference Include="..\AtlasEngine.Modelling.C5.GraphViz\AtlasEngine.Modelling.C5.GraphViz.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="FinancialRiskSystem\context.adoc">

@@ -1,6 +1,6 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Structurizr.Client.Tests")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AtlasEngine.Modelling.C5.Client.Tests")]
 
-namespace Structurizr.Api
+namespace AtlasEngine.Modelling.C5.Api
 {
     public class AssemblyInfo
     {

@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.Serialization;
-using Structurizr.Util;
+using AtlasEngine.Modelling.C5.Util;
 
 namespace Structurizr
 {
@@ -45,7 +45,7 @@ namespace Structurizr
 
             set
             {
-                if (Structurizr.Color.IsHexColorCode(value))
+                if (AtlasEngine.Modelling.C5.Color.IsHexColorCode(value))
                 {
                     this._background = value.ToLower();
                 }
@@ -71,7 +71,7 @@ namespace Structurizr
 
             set
             {
-                if (Structurizr.Color.IsHexColorCode(value))
+                if (AtlasEngine.Modelling.C5.Color.IsHexColorCode(value))
                 {
                     this._stroke = value.ToLower();
                 }
@@ -97,7 +97,7 @@ namespace Structurizr
 
             set
             {
-                if (Structurizr.Color.IsHexColorCode(value))
+                if (AtlasEngine.Modelling.C5.Color.IsHexColorCode(value))
                 {
                     this._color = value.ToLower();
                 }

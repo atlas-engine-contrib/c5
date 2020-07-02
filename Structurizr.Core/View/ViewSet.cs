@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace Structurizr
 {
-    using Structurizr.Core.View;
+    using AtlasEngine.Modelling.C5.Core.View;
 
     /// <summary>
     /// The set of views onto a software architecture model.

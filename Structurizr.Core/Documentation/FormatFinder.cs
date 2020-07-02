@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Structurizr.Documentation
+namespace AtlasEngine.Modelling.C5.Documentation
 {
     
     internal class FormatFinder

@@ -36,4 +36,4 @@ views.CreateFilteredView(enterpriseContextView, "FutureState", "The future state
 
 In summary, you create a view with all of the elements and relationships that you want to show, and then create one or more filtered views on top, specifying the tags that you'd like to include or exclude.
 
-See [FilteredViews.cs](https://github.com/structurizr/dotnet/tree/master/Structurizr.Examples/FilteredViews.cs) for the full code, and [https://structurizr.com/share/19911](https://structurizr.com/share/19911) for the diagram.
+See [FilteredViews.cs](https://github.com/structurizr/dotnet/tree/master/AtlasEngine.Modelling.C5.Examples/FilteredViews.cs) for the full code, and [https://structurizr.com/share/19911](https://structurizr.com/share/19911) for the diagram.

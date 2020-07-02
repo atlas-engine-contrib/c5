@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Structurizr.Core\Structurizr.Core.csproj" />
+    <ProjectReference Include="..\AtlasEngine.Modelling.C5.Core\AtlasEngine.Modelling.C5.Core.csproj" />
   </ItemGroup>
 
 </Project>

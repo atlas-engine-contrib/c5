@@ -34,4 +34,4 @@ With documentation, the colour pairs are mapped onto the navigation links at the
 
 ![Branded documentation](images/corporate-branding-4.png)
 
-See [CorporateBranding.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/CorporateBranding.cs) for a full example, and [https://structurizr.com/share/35031](https://structurizr.com/share/35031) to access the workspace.
+See [CorporateBranding.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/CorporateBranding.cs) for a full example, and [https://structurizr.com/share/35031](https://structurizr.com/share/35031) to access the workspace.

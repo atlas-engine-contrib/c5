@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Structurizr.Util;
+using AtlasEngine.Modelling.C5.Util;
 
 namespace Structurizr
 {

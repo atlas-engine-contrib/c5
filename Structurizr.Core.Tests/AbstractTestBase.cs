@@ -1,4 +1,4 @@
-﻿namespace Structurizr.Core.Tests
+﻿namespace AtlasEngine.Modelling.C5.Core.Tests
 {
     public abstract class AbstractTestBase
     {

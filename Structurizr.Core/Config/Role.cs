@@ -1,4 +1,4 @@
-﻿namespace Structurizr.Config
+﻿namespace AtlasEngine.Modelling.C5.Config
 {
     public enum Role
     {

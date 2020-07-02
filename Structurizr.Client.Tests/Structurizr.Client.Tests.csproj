@@ -9,6 +9,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Structurizr.Client\Structurizr.Client.csproj" />
+    <ProjectReference Include="..\AtlasEngine.Modelling.C5.Client\AtlasEngine.Modelling.C5.Client.csproj" />
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Structurizr.Api
+namespace AtlasEngine.Modelling.C5.Api
 {
     internal class HashBasedMessageAuthenticationCode
     {

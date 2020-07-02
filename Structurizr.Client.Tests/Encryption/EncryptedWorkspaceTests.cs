@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Linq;
-using Structurizr.Config;
-using Structurizr.Encryption;
-using Structurizr.IO.Json;
+using AtlasEngine.Modelling.C5.Config;
+using AtlasEngine.Modelling.C5.Encryption;
+using AtlasEngine.Modelling.C5.IO.Json;
 using Xunit;
 
-namespace Structurizr.Api.Encryption.Tests
+namespace AtlasEngine.Modelling.C5.Api.Encryption.Tests
 {
     public class EncryptedWorkspaceTests
     {

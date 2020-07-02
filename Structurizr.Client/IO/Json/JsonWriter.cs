@@ -2,7 +2,7 @@
 using System.IO;
 using Newtonsoft.Json.Converters;
 
-namespace Structurizr.IO.Json
+namespace AtlasEngine.Modelling.C5.IO.Json
 {
     public class JsonWriter
     {

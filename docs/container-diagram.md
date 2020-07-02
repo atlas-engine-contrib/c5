@@ -26,4 +26,4 @@ containerView.AddAllContainers();
 containerView.Add(mainframeBankingSystem);
 ```
 
-See [BigBankPlc.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/BigBankPlc.cs) for the full code, and [https://structurizr.com/share/36141#Containers](https://structurizr.com/share/36141#Containers) for the diagram.
+See [BigBankPlc.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/BigBankPlc.cs) for the full code, and [https://structurizr.com/share/36141#Containers](https://structurizr.com/share/36141#Containers) for the diagram.

@@ -165,11 +165,11 @@ namespace Structurizr
             
             if (interactionStyle == InteractionStyle.Synchronous)
             {
-                AddTags(Structurizr.Tags.Synchronous);
+                AddTags(AtlasEngine.Modelling.C5.Tags.Synchronous);
             }
             else
             {
-                AddTags(Structurizr.Tags.Asynchronous);
+                AddTags(AtlasEngine.Modelling.C5.Tags.Asynchronous);
             }
         }
 
@@ -177,7 +177,7 @@ namespace Structurizr
         {
             if (LinkedRelationshipId == null) {
                 string[] tags = {
-                    Structurizr.Tags.Relationship
+                    AtlasEngine.Modelling.C5.Tags.Relationship
                 };
                 return tags.ToList();
             } else {

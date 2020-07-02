@@ -1,5 +1,5 @@
-﻿using Structurizr.Encryption;
-using Structurizr.IO.Json;
+﻿using AtlasEngine.Modelling.C5.Encryption;
+using AtlasEngine.Modelling.C5.IO.Json;
 using System;
 using System.IO;
 using System.Net;
@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Structurizr.Api
+namespace AtlasEngine.Modelling.C5.Api
 {
 
     /// <summary>

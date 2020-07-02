@@ -1,9 +1,9 @@
 ﻿using Xunit;
 using System;
 
-using Structurizr.Core.Util;
+using AtlasEngine.Modelling.C5.Core.Util;
 
-namespace Structurizr.Core.Tests
+namespace AtlasEngine.Modelling.C5.Core.Tests
 {
 
 

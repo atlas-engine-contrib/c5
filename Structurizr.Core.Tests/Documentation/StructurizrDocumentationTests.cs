@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using Structurizr.Documentation;
+using AtlasEngine.Modelling.C5.Documentation;
 using Xunit;
 
-namespace Structurizr.Core.Tests.Documentation
+namespace AtlasEngine.Modelling.C5.Core.Tests.Documentation
 {
     public class StructurizrDocumentationTests : AbstractTestBase
     {

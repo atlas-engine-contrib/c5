@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace Structurizr.IO.Json
+namespace AtlasEngine.Modelling.C5.IO.Json
 {
     internal class PaperSizeJsonConverter : JsonConverter
     {

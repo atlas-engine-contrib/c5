@@ -37,7 +37,7 @@ namespace Structurizr
 
             set
             {
-                if (Structurizr.Color.IsHexColorCode(value))
+                if (AtlasEngine.Modelling.C5.Color.IsHexColorCode(value))
                 {
                     this._color = value.ToLower();
                 }

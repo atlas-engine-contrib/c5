@@ -240,4 +240,4 @@ _Pvt_Extensions
 .idea
 
 # Structurizr JSON files
-Structurizr.Examples/*.json
+AtlasEngine.Modelling.C5.Examples/*.json

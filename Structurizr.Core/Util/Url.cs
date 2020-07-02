@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Structurizr.Util
+namespace AtlasEngine.Modelling.C5.Util
 {
 
     public class Url

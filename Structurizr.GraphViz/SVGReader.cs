@@ -1,4 +1,4 @@
-namespace Structurizr.GraphViz
+namespace AtlasEngine.Modelling.C5.GraphViz
 {
     using System;
     using System.Collections.Generic;

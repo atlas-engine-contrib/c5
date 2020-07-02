@@ -1,9 +1,9 @@
-﻿using Structurizr.Util;
+﻿using AtlasEngine.Modelling.C5.Util;
 using System;
 using System.IO;
 using Xunit;
 
-namespace Structurizr.Core.Tests.Util
+namespace AtlasEngine.Modelling.C5.Core.Tests.Util
 {
     public class ImageUtilTests
     {

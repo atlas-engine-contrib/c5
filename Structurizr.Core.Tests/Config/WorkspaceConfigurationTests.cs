@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Structurizr.Config;
+using AtlasEngine.Modelling.C5.Config;
 using Xunit;
 
-namespace Structurizr.Core.Tests.Configuration
+namespace AtlasEngine.Modelling.C5.Core.Tests.Configuration
 {
     public class ConfigurationTests
     {

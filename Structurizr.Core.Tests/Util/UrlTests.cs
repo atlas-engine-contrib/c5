@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Structurizr.Util;
+using AtlasEngine.Modelling.C5.Util;
 
-namespace Structurizr.Core.Tests
+namespace AtlasEngine.Modelling.C5.Core.Tests
 {
 
     

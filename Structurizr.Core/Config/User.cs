@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Structurizr.Config
+namespace AtlasEngine.Modelling.C5.Config
 {
     
     [DataContract]

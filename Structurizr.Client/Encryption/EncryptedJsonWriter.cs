@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Structurizr.IO.Json;
+using AtlasEngine.Modelling.C5.IO.Json;
 using System.IO;
 
-namespace Structurizr.Encryption
+namespace AtlasEngine.Modelling.C5.Encryption
 {
     public class EncryptedJsonWriter
     {

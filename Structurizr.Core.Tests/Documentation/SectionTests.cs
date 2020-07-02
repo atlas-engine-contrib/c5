@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Structurizr.Documentation.Tests
+namespace AtlasEngine.Modelling.C5.Documentation.Tests
 {
     public class SectionTests
     {

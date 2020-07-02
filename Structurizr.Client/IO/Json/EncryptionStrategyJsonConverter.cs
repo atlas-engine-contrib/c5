@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Structurizr.Encryption;
+using AtlasEngine.Modelling.C5.Encryption;
 using System;
 using System.Reflection;
 
-namespace Structurizr.IO.Json
+namespace AtlasEngine.Modelling.C5.IO.Json
 {
     internal class EncryptionStrategyJsonConverter : JsonConverter
     {

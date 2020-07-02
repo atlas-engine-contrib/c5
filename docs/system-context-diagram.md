@@ -25,4 +25,4 @@ SystemContextView systemContextView = views.CreateSystemContextView(internetBank
 systemContextView.AddNearestNeighbours(internetBankingSystem);
 ```
 
-See [BigBankPlc.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/BigBankPlc.cs) for the full code, and [https://structurizr.com/share/36141#SystemContext](https://structurizr.com/share/36141#SystemContext) for the diagram.
+See [BigBankPlc.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/BigBankPlc.cs) for the full code, and [https://structurizr.com/share/36141#SystemContext](https://structurizr.com/share/36141#SystemContext) for the diagram.

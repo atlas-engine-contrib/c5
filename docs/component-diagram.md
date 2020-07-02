@@ -32,7 +32,7 @@ componentView.Add(customer);
 componentView.Add(mainframeBankingSystem);
 ```
 
-See [BigBankPlc.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/BigBankPlc.cs) for the full code, and [https://structurizr.com/share/36141#Components](https://structurizr.com/share/36141#Components) for the diagram.
+See [BigBankPlc.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/BigBankPlc.cs) for the full code, and [https://structurizr.com/share/36141#Components](https://structurizr.com/share/36141#Components) for the diagram.
 
 ### Extracting components automatically
 

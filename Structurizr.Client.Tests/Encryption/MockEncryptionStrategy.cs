@@ -1,7 +1,7 @@
 ﻿using System;
-using Structurizr.Encryption;
+using AtlasEngine.Modelling.C5.Encryption;
 
-namespace Structurizr.Api.Encryption.Tests
+namespace AtlasEngine.Modelling.C5.Api.Encryption.Tests
 {
     internal class MockEncryptionStrategy : EncryptionStrategy
     {

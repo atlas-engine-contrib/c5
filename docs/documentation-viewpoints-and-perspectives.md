@@ -4,7 +4,7 @@ Structurizr for .NET includes an implementation of the [Viewpoints and Perspecti
 
 ## Example
 
-To use this template, create an instance of the [ViewpointsAndPerspectivesDocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/Documentation/ViewpointsAndPerspectivesDocumentationTemplate.cs) class.
+To use this template, create an instance of the [ViewpointsAndPerspectivesDocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/Documentation/ViewpointsAndPerspectivesDocumentationTemplate.cs) class.
 You can then add documentation sections as needed, each associated with a software system in your software architecture model, using Markdown or AsciiDoc. For example:
 
 ```c#
@@ -21,7 +21,7 @@ template.AddAppendicesSection(softwareSystem, new FileInfoPath.Combine(documenta
 ```
 
 Structurizr will create navigation controls based upon the the sections in the documentation, and the software systems they have been associated with.
-See [ViewpointsAndPerspectivesDocumentationExample.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/ViewpointsAndPerspectivesDocumentationExample.cs) for the full code, and [https://structurizr.com/share/36371/documentation](https://structurizr.com/share/36371/documentation) to see the rendered documentation.
+See [ViewpointsAndPerspectivesDocumentationExample.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/ViewpointsAndPerspectivesDocumentationExample.cs) for the full code, and [https://structurizr.com/share/36371/documentation](https://structurizr.com/share/36371/documentation) to see the rendered documentation.
 
 ## More information
 

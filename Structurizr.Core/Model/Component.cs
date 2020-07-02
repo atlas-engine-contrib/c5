@@ -71,8 +71,8 @@ namespace Structurizr
         {
             return new List<string>
             {
-                Structurizr.Tags.Element,
-                Structurizr.Tags.Component
+                AtlasEngine.Modelling.C5.Tags.Element,
+                AtlasEngine.Modelling.C5.Tags.Component
             };
         }
 

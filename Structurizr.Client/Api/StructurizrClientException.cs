@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Structurizr.Api
+namespace AtlasEngine.Modelling.C5.Api
 {
     public class StructurizrClientException : Exception
     {

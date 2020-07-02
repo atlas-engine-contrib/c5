@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Structurizr.Api
+namespace AtlasEngine.Modelling.C5.Api
 {
     internal class HmacAuthorizationHeader
     {

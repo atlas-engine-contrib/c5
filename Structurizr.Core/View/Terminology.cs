@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Structurizr.Core.View
+namespace AtlasEngine.Modelling.C5.Core.View
 {
 
     /// <summary>

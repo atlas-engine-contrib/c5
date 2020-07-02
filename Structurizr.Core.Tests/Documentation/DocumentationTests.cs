@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Structurizr.Documentation;
+using AtlasEngine.Modelling.C5.Documentation;
 using Xunit;
 
-namespace Structurizr.Core.Tests.Documentation
+namespace AtlasEngine.Modelling.C5.Core.Tests.Documentation
 {
 
     public class DocumentationTests : AbstractTestBase
     {
 
-        private Structurizr.Documentation.Documentation _documentation;
+        private AtlasEngine.Modelling.C5.Documentation.Documentation _documentation;
 
         public DocumentationTests()
         {

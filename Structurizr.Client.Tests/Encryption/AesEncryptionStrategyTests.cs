@@ -1,9 +1,9 @@
 ﻿using Xunit;
-using Structurizr.Encryption;
+using AtlasEngine.Modelling.C5.Encryption;
 using System.Security.Cryptography;
-using Structurizr.Api.Tests;
+using AtlasEngine.Modelling.C5.Api.Tests;
 
-namespace Structurizr.Api.Encryption.Tests
+namespace AtlasEngine.Modelling.C5.Api.Encryption.Tests
 {
     
     public class AesEncryptionStrategyTests

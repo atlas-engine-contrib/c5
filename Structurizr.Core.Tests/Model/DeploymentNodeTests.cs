@@ -1,8 +1,8 @@
 ﻿using System;
-using Structurizr.Core.Util;
+using AtlasEngine.Modelling.C5.Core.Util;
 using Xunit;
 
-namespace Structurizr.Core.Tests
+namespace AtlasEngine.Modelling.C5.Core.Tests
 {
     
     public class DeploymentNodeTests : AbstractTestBase

@@ -1,4 +1,4 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Structurizr.Core.Tests")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AtlasEngine.Modelling.C5.Core.Tests")]
 
 namespace Structurizr
 {

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Structurizr.Util
+namespace AtlasEngine.Modelling.C5.Util
 {
     public class ImageUtils
     {

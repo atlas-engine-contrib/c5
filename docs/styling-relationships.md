@@ -9,7 +9,7 @@ However, the following characteristics of the relationships can be customized:
 - Line thickness (pixels)
 - Colour (HTML hex value)
 - Dashed (true or false)
-- Routing (Direct or Orthogonal; see the [Routing](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/View/Routing.cs) enum)
+- Routing (Direct or Orthogonal; see the [Routing](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/View/Routing.cs) enum)
 - Font size (pixels)
 - Width (of the description, in pixels)
 - Position (of the description along the line, as a percentage from start to end)
@@ -21,7 +21,7 @@ All relationships within a software architecture model can have one or more tags
 
 ## Colour
 
-To style a relationship, simply create a [RelationshipStyle](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/View/RelationshipStyle.cs) for a particular tag and specify the characteristics that you would like to change. For example, you can change the colour of all relationships as follows.
+To style a relationship, simply create a [RelationshipStyle](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/View/RelationshipStyle.cs) for a particular tag and specify the characteristics that you would like to change. For example, you can change the colour of all relationships as follows.
 
 ```java
 Styles styles = workspace.Views.Configuration.Styles;
@@ -47,4 +47,4 @@ Structurizr will automatically add all relationship styles to a diagram key.
 
 ![The diagram key](images/styling-relationships-4.png)
 
-You can find the code for this example at [StylingRelationships.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/StylingRelationships.cs) and the live example workspace at [https://structurizr.com/share/36131](https://structurizr.com/share/36131).
+You can find the code for this example at [StylingRelationships.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/StylingRelationships.cs) and the live example workspace at [https://structurizr.com/share/36131](https://structurizr.com/share/36131).

@@ -4,7 +4,7 @@ Structurizr for .NET includes an implementation of the "software guidebook" from
 
 ## Example
 
-To use this template, create an instance of the [StructurizrDocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/Documentation/StructurizrDocumentationTemplate.cs) class.
+To use this template, create an instance of the [StructurizrDocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/Documentation/StructurizrDocumentationTemplate.cs) class.
 You can then add documentation sections as needed, each associated with a software system in your software architecture model, using Markdown or AsciiDoc. For example:
 
 ```c#
@@ -26,7 +26,7 @@ template.AddDecisionLogSection(softwareSystem, new FileInfoPath.Combine(document
 ```
 
 Structurizr will create navigation controls based upon the the sections in the documentation, and the software systems they have been associated with.
-See [StructurizrDocumentationExample.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/StructurizrDocumentationExample.cs) for the full code, and [https://structurizr.com/share/14181/documentation](https://structurizr.com/share/14181/documentation) to see the rendered documentation.
+See [StructurizrDocumentationExample.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/StructurizrDocumentationExample.cs) for the full code, and [https://structurizr.com/share/14181/documentation](https://structurizr.com/share/14181/documentation) to see the rendered documentation.
 
 ## More information
 

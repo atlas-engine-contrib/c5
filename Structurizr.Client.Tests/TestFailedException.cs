@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Structurizr.Api.Tests
+namespace AtlasEngine.Modelling.C5.Api.Tests
 {
     public class TestFailedException : Exception
     {

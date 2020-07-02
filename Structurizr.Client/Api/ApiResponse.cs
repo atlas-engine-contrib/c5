@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Structurizr.Api
+namespace AtlasEngine.Modelling.C5.Api
 {
 
     [DataContract]

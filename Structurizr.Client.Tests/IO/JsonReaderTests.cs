@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using Structurizr.IO.Json;
+using AtlasEngine.Modelling.C5.IO.Json;
 using Xunit;
 
-namespace Structurizr.Api.Tests.IO
+namespace AtlasEngine.Modelling.C5.Api.Tests.IO
 {
     public class JsonReaderTests
     {

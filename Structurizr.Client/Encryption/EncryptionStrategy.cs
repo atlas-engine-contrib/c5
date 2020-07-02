@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Structurizr.Encryption
+namespace AtlasEngine.Modelling.C5.Encryption
 {
 
     [DataContract]

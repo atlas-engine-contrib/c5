@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Structurizr.Util;
+using AtlasEngine.Modelling.C5.Util;
 
-namespace Structurizr.Documentation
+namespace AtlasEngine.Modelling.C5.Documentation
 {
     
     /// <summary>

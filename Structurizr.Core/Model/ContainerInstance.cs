@@ -73,7 +73,7 @@ namespace Structurizr
         internal ContainerInstance(Container container, int instanceId, string environment)
         {
             Container = container;
-            AddTags(Structurizr.Tags.ContainerInstance);
+            AddTags(AtlasEngine.Modelling.C5.Tags.ContainerInstance);
             InstanceId = instanceId;
             Environment = environment;
         }
@@ -132,7 +132,7 @@ namespace Structurizr
                 throw new ArgumentException("The URL must not be null or empty.");
             }
 
-            if (!Structurizr.Util.Url.IsUrl(url))
+            if (!AtlasEngine.Modelling.C5.Util.Url.IsUrl(url))
             {
                 throw new ArgumentException(url + " is not a valid URL.");
             }

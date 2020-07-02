@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Xunit;
 
-namespace Structurizr.Core.Tests
+namespace AtlasEngine.Modelling.C5.Core.Tests
 {
     public class ModelItemTests : AbstractTestBase
     {
@@ -71,8 +71,8 @@ namespace Structurizr.Core.Tests
             Person user = Model.AddPerson("Person", "Description");
             SoftwareSystem softwareSystem = Model.AddSoftwareSystem("Software System", "Description");
             var relation = user.Uses(softwareSystem, "Uses", "");
-            // Relationship.GetRequiredTags() == new List<string> { Structurizr.Tags.Relationship, Structurizr.Tags.Synchronous }
-            Assert.Equal(new List<string> { Structurizr.Tags.Relationship, Structurizr.Tags.Synchronous }, relation.GetAllTags());
+            // Relationship.GetRequiredTags() == new List<string> { AtlasEngine.Modelling.C5.Tags.Relationship, AtlasEngine.Modelling.C5.Tags.Synchronous }
+            Assert.Equal(new List<string> { AtlasEngine.Modelling.C5.Tags.Relationship, AtlasEngine.Modelling.C5.Tags.Synchronous }, relation.GetAllTags());
         }
 
         [Fact]
@@ -82,8 +82,8 @@ namespace Structurizr.Core.Tests
             SoftwareSystem softwareSystem = Model.AddSoftwareSystem("Software System", "Description");
             var relation = user.Uses(softwareSystem, "Uses", "");
             relation.AddTags("TagA","TagB");
-            // Relationship.GetRequiredTags() == new List<string> { Structurizr.Tags.Relationship, Structurizr.Tags.Synchronous }
-            Assert.Equal(new List<string> { Structurizr.Tags.Relationship, Structurizr.Tags.Synchronous, "TagA","TagB" }, relation.GetAllTags());
+            // Relationship.GetRequiredTags() == new List<string> { AtlasEngine.Modelling.C5.Tags.Relationship, AtlasEngine.Modelling.C5.Tags.Synchronous }
+            Assert.Equal(new List<string> { AtlasEngine.Modelling.C5.Tags.Relationship, AtlasEngine.Modelling.C5.Tags.Synchronous, "TagA","TagB" }, relation.GetAllTags());
         }
 
         [Fact]

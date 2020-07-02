@@ -1,8 +1,8 @@
 # Getting started
 
-Here is a quick overview of how to get started with Structurizr for .NET so that you can create a software architecture model as code. You can find the code at [GettingStarted.cs](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/GettingStarted.cs) and the live example workspace at [https://structurizr.com/share/25441](https://structurizr.com/share/25441).
+Here is a quick overview of how to get started with Structurizr for .NET so that you can create a software architecture model as code. You can find the code at [GettingStarted.cs](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/GettingStarted.cs) and the live example workspace at [https://structurizr.com/share/25441](https://structurizr.com/share/25441).
 
-For more examples, please see [Structurizr.Examples](https://github.com/structurizr/dotnet/tree/master/Structurizr.Examples).
+For more examples, please see [AtlasEngine.Modelling.C5.Examples](https://github.com/structurizr/dotnet/tree/master/AtlasEngine.Modelling.C5.Examples).
 
 ## 1. Dependencies
 
@@ -10,13 +10,13 @@ The "Structurizr for .NET" assemblies are available on NuGet as follows:
 
 Name                    | Description
 ---------------------   | ---------------------------------------------------------------------------------------------------------------------------
-Structurizr.Core        | The basic library that can used to create software architecture models.
-Structurizr.Client		| The API client for publishing models on the Structurizr cloud service and on-premises installation.
+AtlasEngine.Modelling.C5.Core        | The basic library that can used to create software architecture models.
+AtlasEngine.Modelling.C5.Client		| The API client for publishing models on the Structurizr cloud service and on-premises installation.
 
-To install Structurizr.Client, use the following command in the NuGet Package Manager Console:
+To install AtlasEngine.Modelling.C5.Client, use the following command in the NuGet Package Manager Console:
 
 ```powershell
-Install-Package Structurizr.Client
+Install-Package AtlasEngine.Modelling.C5.Client
 ```
 
 ## 2. Create a model

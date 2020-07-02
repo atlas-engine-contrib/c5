@@ -16,7 +16,7 @@ The documentation is broken up into a number of sections, as defined by the temp
 
 ## Custom sections
 
-You can add custom sections using the ```AddSection``` method on the [DocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/Documentation/DocumentationTemplate.cs) class:
+You can add custom sections using the ```AddSection``` method on the [DocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/Documentation/DocumentationTemplate.cs) class:
 
 ```c#
 template.AddSection(softwareSystem, "My custom section", Format.Markdown, ...);
@@ -28,13 +28,13 @@ Images can be included using the regular Markdown/AsciiDoc syntax.
 
 ![Including images](images/documentation-2.png)
 
-For this to work, the image files must be hosted externally (e.g. on your own web server, ideally accessible via HTTPS) or uploaded with your workspace using the ```AddImages()``` or ```AddImage()``` methods on the [DocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/Structurizr.Core/Documentation/DocumentationTemplate.cs) class.
+For this to work, the image files must be hosted externally (e.g. on your own web server, ideally accessible via HTTPS) or uploaded with your workspace using the ```AddImages()``` or ```AddImage()``` methods on the [DocumentationTemplate](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Core/Documentation/DocumentationTemplate.cs) class.
 
 ```c#
 template.AddImages(new DirectoryInfo("..."));
 ```
 
-See [functional-overview.md](https://raw.githubusercontent.com/structurizr/dotnet/master/Structurizr.Examples/FinancialRiskSystem/functional-overview.md) and [FinancialRiskSystem](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/FinancialRiskSystem.cs) for an example.
+See [functional-overview.md](https://raw.githubusercontent.com/structurizr/dotnet/master/AtlasEngine.Modelling.C5.Examples/FinancialRiskSystem/functional-overview.md) and [FinancialRiskSystem](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/FinancialRiskSystem.cs) for an example.
 
 ## Embedding diagrams
 
@@ -49,4 +49,4 @@ Markdown - ![](embed:DiagramKey)
 AsciiDoc - image::embed:DiagramKey[]
 ```
 
-See [context.md](https://raw.githubusercontent.com/structurizr/dotnet/master/Structurizr.Examples/FinancialRiskSystem/context.md), [context.adoc](https://raw.githubusercontent.com/structurizr/dotnet/master/Structurizr.Examples/FinancialRiskSystem/context.adoc) and [FinancialRiskSystem](https://github.com/structurizr/dotnet/blob/master/Structurizr.Examples/FinancialRiskSystem.cs) for an example.
+See [context.md](https://raw.githubusercontent.com/structurizr/dotnet/master/AtlasEngine.Modelling.C5.Examples/FinancialRiskSystem/context.md), [context.adoc](https://raw.githubusercontent.com/structurizr/dotnet/master/AtlasEngine.Modelling.C5.Examples/FinancialRiskSystem/context.adoc) and [FinancialRiskSystem](https://github.com/structurizr/dotnet/blob/master/AtlasEngine.Modelling.C5.Examples/FinancialRiskSystem.cs) for an example.
